@@ -1,15 +1,99 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <style>
+            body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+  }
+  #overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+  #modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+</style>
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <title>加载中</title>
-        <script>
+        <!--  <script>
             // location.href="./cn/index.html"; // 换成这条即可，代码中的版权等信息要改下
             location.href="./cn/index.html";
             // location.href="./indexs.html";
-        </script>
+        </script> -->
     </head>
     <body>
-        
+        <div id="overlay">
+            <div id="modal">
+                
+                <img src="jjs.png" alt="Image">
+                <p>1️⃣ 微信扫描👆二维码或搜索公众号：<strong>锦技社</strong><br>
+2️⃣ 在公众号中发送：<strong>万人迷吧</strong>，获取动态秘钥<br>
+3️⃣ 复制动态秘钥4位纯数字，粘贴至下方输入框中，点击登录
+</p>
+                <input type="text" id="codeInput">
+                <button onclick="submitCode()">登录</button>
+            </div>
+        </div>
+        <script>
+                         
+                        if (localStorage.getItem('cachedCode') === '8888') {
+                          // Do nothing if the code is already cached
+                          location.href="./cn/index.html";
+                        } else {
+                          // Show the overlay/modal
+                          document.getElementById('overlay').style.display = 'block';
+                        
+                        }
+                        
+                        // Function to submit the code
+                        function submitCode() {
+                          var userInput = document.getElementById('codeInput').value;
+                          var secretCode = '8888'; // Change this to your secret code
+                        
+                          if (userInput === secretCode) {
+                            // Cache the code
+                            localStorage.setItem('cachedCode', userInput);
+                            // Hide the overlay/modal
+                            document.getElementById('overlay').style.display = 'none';
+                            location.href="./cn/index.html";
+                          } else {
+                            alert('验证码错误，请重试.');
+                          }
+                        }
+        </script>
     </body>
 </html>
