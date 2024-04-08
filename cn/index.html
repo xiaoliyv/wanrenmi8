@@ -190,16 +190,17 @@
                                 1. 要改这个地方
                                 在这里填要显示在页面的几个标签 
                             -->
-                           <li>
-                                <input checked="" hidden="" type="radio" name="type" id="type-baidu">
-                                <label for="type-baidu">
-                                    <span style="color:#2100E0">UP云搜</span>
-                                </label>
-                            </li>
+                          
                             <li>
                                 <input hidden="" type="radio" name="type" id="type-google">
                                 <label for="type-google">
                                     <span style="color:#fa3b5e">易搜</span>
+                                </label>
+                            </li>
+                            <li>
+                                <input checked="" hidden="" type="radio" name="type" id="type-baidu">
+                                <label for="type-baidu">
+                                    <span style="color:#2100E0">UP云搜</span>
                                 </label>
                             </li>
                             <li>
@@ -242,15 +243,16 @@
                 const searchList = [
                 // 2. 需要改这个地方，这个列表的数量要和上面的对的上
                 //    默认渲染第一个
-                    {
-                        "name": "UP云搜",
-                        "url": "https://www.upyunso.com/search.html?page=1&keyword=",
-                        "placeholder": "UP云搜"
-                    },
+                   
                     {
                         "name": "易搜",
                         "url": "https://yiso.fun/info?searchKey=",
                         "placeholder": "易搜"
+                    },
+                    {
+                        "name": "UP云搜",
+                        "url": "https://www.upyunso.com/search.html?page=1&keyword=",
+                        "placeholder": "UP云搜"
                     },
                     {
                         "name": "优聚搜",
