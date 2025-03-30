@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 日报 [版本 GHOST_SHELL] - 20250330</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                text-shadow:
+                    0 0 4px #00e6e6,
+                    0 0 10px #00e6e6,
+                    0 0 18px #00e6e6,
+                    0 0 38px #00a3a3,
+                    0 0 70px #00a3a3;
+                opacity: 1;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 50px; } /* 控制扫描线速度 */
+        }
+
+        @keyframes data-flow {
+             0% { background-position: 100% 0; }
+             100% { background-position: -100% 0; }
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: rgba(0, 255, 255, 0.5); box-shadow: 0 0 8px rgba(0, 255, 255, 0.3); }
+            50% { border-color: rgba(0, 255, 255, 0.8); box-shadow: 0 0 15px rgba(0, 255, 255, 0.6); }
+            100% { border-color: rgba(0, 255, 255, 0.5); box-shadow: 0 0 8px rgba(0, 255, 255, 0.3); }
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace, "PingFang SC", "Microsoft YaHei", sans-serif; /* 添加中文字体备选 */
+            background-color: #00050a; /* 深蓝黑色 */
+            color: #c0f0ff; /* 默认文本浅青色 */
+            margin: 0;
+            padding: 0;
+            line-height: 1.8; /* 调整行高以适应中文 */
+            font-size: 15px;
+            overflow-x: hidden; /* 防止特效导致水平滚动 */
+            position: relative; /* 伪元素定位需要 */
+            min-height: 100%;
+        }
+
+        /* 扫描线覆盖层 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.25) 51%
+            );
+            background-size: 100% 4px; /* 扫描线厚度和间距 */
+            animation: scanline 0.4s linear infinite; /* 扫描线动画 */
+            pointer-events: none; /* 允许与下方内容交互 */
+            z-index: 5; /* 在背景之上，内容之下 */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 25px 35px;
+            background: rgba(10, 20, 40, 0.85); /* 半透明深蓝 */
+            border: 1px solid rgba(0, 255, 255, 0.3); /* 青色边框 */
+            border-radius: 5px;
+            box-shadow: 0 0 25px rgba(0, 200, 255, 0.3), inset 0 0 15px rgba(10, 20, 40, 0.5);
+            position: relative;
+            z-index: 10; /* 在扫描线之上 */
+            backdrop-filter: blur(3px); /* 毛玻璃效果 */
+        }
+
+        /* HUD 角括号 */
+        .container::before, .container::after {
+             content: '';
+             position: absolute;
+             width: 20px;
+             height: 20px;
+             border-color: #ff00ff; /* 电子紫色 */
+             border-style: solid;
+             opacity: 0.8;
+             animation: flicker 4s linear infinite alternate; /* 给括号应用闪烁效果 */
+        }
+        .container::before {
+            top: -5px; left: -5px; border-width: 2px 0 0 2px;
+        }
+        .container::after {
+            bottom: -5px; right: -5px; border-width: 0 2px 2px 0;
+        }
+
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 0, 255, 0.4); /* 紫色分隔线 */
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .header h1 {
+            color: #00ffff; /* 亮青色 */
+            font-size: 2.5em;
+            margin: 0 0 5px 0;
+            letter-spacing: 3px; /* 为中文调整字间距 */
+            text-transform: uppercase;
+            animation: flicker 3s linear infinite;
+        }
+
+        .header p {
+            color: #d0a0ff; /* 电子紫变体 */
+            font-size: 0.9em;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .news-item {
+            margin-bottom: 35px;
+            padding: 20px;
+            background: rgba(20, 35, 60, 0.7); /* 项目使用稍浅的背景 */
+            border-left: 5px solid; /* 默认左边框 */
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden; /* 包含伪元素 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .news-item:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 边框颜色编码 */
+        .item-roo { border-left-color: #00ffff; } /* 青色 */
+        .item-cursor { border-left-color: #7dfc00; } /* 亮绿色 */
+        .item-deepseek { border-left-color: #ffcc00; } /* 黄/橙色 */
+        .item-gemini-app { border-left-color: #ff00ff; } /* 品红/紫色 */
+        .item-midjourney { border-left-color: #ff7f50; } /* 珊瑚色 */
+        .item-doubao { border-left-color: #00aaff; } /* 亮蓝色 */
+
+
+        .news-item h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #ffffff; /* 标题用白色 */
+            font-size: 1.4em; /* 调整标题大小 */
+            letter-spacing: 1.5px; /* 调整标题字间距 */
+            border-bottom: 1px dashed rgba(0, 255, 255, 0.2); /* 虚线下划线 */
+            padding-bottom: 8px;
+            display: inline-block; /* 使边框适应文本 */
+        }
+
+         /* 标题上的数据流效果 */
+        .news-item h3::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            transition: width 0.5s ease;
+            margin-top: 5px;
+        }
+        .news-item:hover h3::after {
+            width: 100%;
+        }
+
+
+        .news-item p {
+            margin-bottom: 10px; /* 调整段落间距 */
+            color: #c0f0ff; /* 默认浅青色文本 */
+            font-size: 1em; /* 调整正文大小 */
+        }
+
+        /* 高亮样式 - 使用对比鲜明的霓虹色 */
+        .highlight {
+            color: #ff3366; /* 霓虹粉/红色 */
+            font-weight: bold; /* 粗体 */
+            background-color: rgba(255, 51, 102, 0.15); /* 微妙背景高亮 */
+            padding: 1px 4px;
+            border-radius: 3px;
+            text-shadow: 0 0 5px rgba(255, 51, 102, 0.5);
+        }
+
+        /* 代码片段模拟 */
+        .code-snippet {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(128, 0, 255, 0.3); /* 紫色边框 */
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            border-radius: 3px;
+            white-space: pre-wrap; /* 保留换行和空格 */
+            word-break: break-all;
+            color: #a0ffc0; /* 代码用浅绿色 */
+            line-height: 1.6; /* 代码行高 */
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(0, 255, 255, 0.3); /* 青色顶部边框 */
+            font-size: 0.9em; /* 调整页脚字体大小 */
+            color: #80a0c0; /* 柔和科技蓝 */
+            position: relative;
+        }
+
+        /* 页脚数据流线 */
+         .footer::before {
+            content: '';
+            position: absolute;
+            top: 10px; /* 放在文本上方 */
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255, 0, 255, 0.6) 50%, transparent); /* 紫色渐变 */
+            background-size: 50% 1px; /* 控制渐变大小 */
+            background-repeat: no-repeat;
+            animation: data-flow 4s linear infinite; /* 动画渐变 */
+         }
+
+
+        .footer p {
+            margin: 8px 0; /* 调整页脚行间距 */
+            letter-spacing: 0.5px;
+        }
+         .footer a {
+             color: #00ffff; /* 青色链接 */
+             text-decoration: none;
+             transition: text-shadow 0.3s ease;
+         }
+         .footer a:hover {
+             text-shadow: 0 0 8px #00ffff;
+         }
+
+        /* 背景中的微妙网格线 */
+        body::before {
+             content: '';
+             position: fixed;
+             top: 0; left: 0; right: 0; bottom: 0;
+             background-image:
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+             background-size: 50px 50px; /* 网格大小 */
+             pointer-events: none;
+             z-index: 1; /* 在容器之后，主体背景之上 */
+             opacity: 0.5;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 背景元素可根据需要置于此处 -->
+
+    <div class="container">
+        <header class="header">
+            <h1>// AI 日报 //</h1>
+            <p>:: 日期: 2025.03.30 :: 系统状态: 在线 ::</p>
+        </header>
+
+        <main class="news-grid">
+            <article class="news-item item-roo">
+                <h3>Roo Code 更新 // Boomerang Tasks 已部署</h3>
+                <p>Roo code 升级接收：'Boomerang Tasks' (回旋镖任务) 模块已集成。该功能可将复杂项目分解为更小、易于管理的子单元 [任务片段]。</p>
+                <p>原理类似将工作委派给专业助理：每个子任务在其自身上下文中运行，通常使用针对该特定作业量身定制的不同 ROO 代码模式。效率矩阵预测提升：+15%。</p>
+                <div class="code-snippet">
+// Roo::任务 主项目 {
+//   子任务 Alpha = 回旋镖(任务='数据处理', 模式='RooML优化');
+//   子任务 Beta = 回旋镖(任务='报告生成', 模式='Roo文本合成');
+//   等待 [Alpha, Beta];
+//   输出.编译(Alpha.结果, Beta.结果);
+// }
+                </div>
+            </article>
+
+            <article class="news-item item-cursor">
+                <h3>Cursor <> Gemini 2.5 Pro 集成 // 完全上下文访问权限</h3>
+                <p>神经接口更新：Cursor IDE 现已接入 Google Gemini 2.5 Pro 核心。访问权限已向所有注册用户开放。</p>
+                <p>功能开关：用户可选择性激活完整的 100 万 Token 上下文窗口。已启用针对大规模代码分析和生成的认知增强能力。</p>
+            </article>
+
+            <article class="news-item item-deepseek">
+                <h3>Deepseek-V3 [版本差异] // 幻觉指数警报</h3>
+                <p>异常检测：Deepseek-V3 最新迭代版本显示其幻觉指数 (HI) 约为 <span class="highlight">8.0%</span>。</p>
+                <p>对比分析：先前 V3 稳定版的记录 HI 为 3.9%。当前修订版幻觉率出现显著升高 (超过一倍)。在高精度、关键任务型应用场景中，建议用户谨慎评估并加强验证。</p>
+            </article>
+
+            <article class="news-item item-gemini-app">
+                <h3>Gemini 2.5 Pro // 公共访问协议启动</h3>
+                <p>系统广播：Google 官方确认，强大的 Gemini 2.5 Pro 模型现已通过标准 Gemini 应用程序向所有用户免费开放，无需订阅付费等级。</p>
+                <p>此举将使更广泛的用户群体能够直接体验其先进的长上下文处理能力和逻辑推理功能。</p>
+            </article>
+
+            <article class="news-item item-midjourney">
+                <h3>Midjourney V7 // 视觉核心即将更新 // 评分阶段激活</h3>
+                <p>信号接收：备受期待的 Midjourney V7 渲染引擎已进入最终校准阶段。官方已启动 '评分派对' (Rating Party) 活动，用于对 V7 生成图像进行最后的微调。</p>
+                <p>系统就绪指示：高。预计新版本即将正式向公众发布。</p>
+            </article>
+
+            <article class="news-item item-doubao">
+                <h3>豆包 // '深度思考' 模块上线</h3>
+                <p>字节跳动网络更新：旗下 AI 应用“豆包”正式上线“深度思考”模式，此前该功能已进行多时灰度测试。</p>
+                <p>处理范式革新：采用创新的“边搜边想”机制，区别于传统的“先搜后想”。支持多轮搜索与连续推理，旨在输出更完整、逻辑链条更清晰、更接近人类深度思考方式的内容。</p>
+            </article>
+        </main>
+
+        <footer class="footer">
+            <p>// 传输结束 //</p>
+            <p>来源节点: 公众号：锦技社</p>
+            <p>操作员ID: 锦鲤Sage</p>
+            <p>数据存档: <a href="http://zscc.in" target="_blank">知识船仓·公益社区 [zscc.in]</a></p>
+            <p>// 待命 //</p>
+        </footer>
+    </div>
+
+</body>
+</html>
