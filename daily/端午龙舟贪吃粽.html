@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>端午龙舟贪吃蛇 - HTML5游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ma Shan Zheng', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #165b33, #0c4726);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 背景装饰 */
+        .background-decor {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(218, 165, 32, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(218, 165, 32, 0.1) 0%, transparent 20%),
+                linear-gradient(45deg, transparent 49%, rgba(139, 69, 19, 0.1) 50%, transparent 51%),
+                linear-gradient(-45deg, transparent 49%, rgba(139, 69, 19, 0.1) 50%, transparent 51%);
+            background-size: 100px 100px;
+        }
+
+        .dragon-boat {
+            position: absolute;
+            bottom: 10px;
+            width: 200px;
+            height: 40px;
+            background: #8B4513;
+            border-radius: 10px;
+            z-index: -1;
+            animation: float 20s linear infinite;
+        }
+
+        .dragon-boat::before {
+            content: "";
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: #daa520;
+            border-radius: 50%;
+        }
+
+        .dragon-boat::after {
+            content: "";
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 60px;
+            background: #daa520;
+            border-radius: 10px 10px 0 0;
+        }
+
+        @keyframes float {
+            0% { left: -200px; }
+            100% { left: calc(100% + 200px); }
+        }
+
+        .game-container {
+            background: rgba(0, 30, 15, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            border: 3px solid #daa520;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .game-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20,50 Q40,30 60,50 T100,50" stroke="rgba(218, 165, 32, 0.1)" fill="none" stroke-width="1"/></svg>');
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .bamboo-border {
+            position: absolute;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(to right, #8B4513, #654321, #8B4513);
+            top: 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .bamboo-border.left {
+            left: 0;
+        }
+
+        .bamboo-border.right {
+            right: 0;
+            transform: rotate(180deg);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            position: relative;
+            z-index: 1;
+            letter-spacing: 3px;
+            background: linear-gradient(to bottom, #ffd700, #daa520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .game-screen {
+            margin: 20px 0;
+            padding: 20px;
+        }
+
+        button {
+            background: linear-gradient(to bottom, #daa520, #8B4513);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px auto;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: block;
+            width: 80%;
+            max-width: 250px;
+            font-family: 'Ma Shan Zheng', cursive;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #654321;
+        }
+
+        button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        button:hover {
+            background: linear-gradient(to bottom, #ffd700, #daa520);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        .difficulty-select {
+            background: rgba(0, 40, 20, 0.7);
+            border: 2px solid #daa520;
+            color: #ffd700;
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-size: 1rem;
+            width: 80%;
+            max-width: 250px;
+            margin: 15px auto;
+            text-align: center;
+            display: block;
+            cursor: pointer;
+            outline: none;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .difficulty-select option {
+            background: rgba(0, 30, 15, 0.9);
+            color: #ffd700;
+        }
+
+        .game-board {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            background-color: rgba(0, 40, 20, 0.7);
+            border: 3px solid #daa520;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            grid-template-rows: repeat(20, 1fr);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 5px;
+            background-image: 
+                linear-gradient(rgba(0, 60, 30, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 60, 30, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .cell {
+            border: 1px solid rgba(218, 165, 32, 0.1);
+        }
+
+        .dragon {
+            background: linear-gradient(45deg, #c1272d, #ffd700);
+            border-radius: 5px;
+            box-shadow: 0 0 5px #ffd700;
+            position: relative;
+            z-index: 2;
+        }
+
+        .dragon-head {
+            background: linear-gradient(45deg, #c1272d, #ff8c00);
+            border-radius: 8px;
+            box-shadow: 0 0 8px #ff8c00;
+            position: relative;
+            z-index: 3;
+        }
+
+        .dragon-head::before, .dragon-head::after {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            top: 30%;
+            box-shadow: 0 0 5px #fff;
+        }
+
+        .dragon-head::before {
+            left: 20%;
+        }
+
+        .dragon-head::after {
+            right: 20%;
+        }
+
+        .dragon-head::after {
+            right: 20%;
+        }
+
+        .dragon-head.up::before, .dragon-head.up::after {
+            top: 20%;
+        }
+
+        .dragon-head.down::before, .dragon-head.down::after {
+            top: 60%;
+        }
+
+        .zongzi {
+            background: linear-gradient(135deg, #228B22, #32CD32);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            position: relative;
+            box-shadow: 0 0 8px #32CD32;
+            animation: pulse 1.5s infinite alternate;
+            z-index: 2;
+        }
+
+        .zongzi::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 10%;
+            background: #8B4513;
+            border-radius: 5px;
+            box-shadow: 0 0 5px #8B4513;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(0.9); opacity: 0.9; }
+            to { transform: scale(1.1); opacity: 1; }
+        }
+
+        .obstacle {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            border-radius: 5px;
+            box-shadow: inset 0 0 10px #5D4037;
+            position: relative;
+            z-index: 1;
+        }
+
+        .obstacle::before {
+            content: "石";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            background: rgba(0, 40, 20, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #daa520;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        .game-screen {
+            display: none;
+        }
+
+        #start-screen {
+            display: block;
+        }
+
+        .author-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 50, 25, 0.7);
+            border-radius: 10px;
+            font-size: 1rem;
+            border: 2px solid rgba(218, 165, 32, 0.5);
+            font-family: 'Ma Shan Zheng', cursive;
+            position: relative;
+        }
+
+        .author-info::before {
+            content: "✍";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 24px;
+            background: #0c4726;
+            padding: 0 10px;
+        }
+
+        .high-score {
+            font-weight: bold;
+            color: #ffd700;
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0, 50, 25, 0.7);
+            border-radius: 10px;
+            font-size: 1rem;
+            border: 2px solid #daa520;
+            font-family: 'Ma Shan Zheng', cursive;
+            position: relative;
+        }
+
+        .controls::before {
+            content: "🎮";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 24px;
+            background: #0c4726;
+            padding: 0 10px;
+        }
+
+        .controls p {
+            margin: 8px 0;
+        }
+
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 15px;
+        }
+
+        .preview-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preview-label {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #ffd700;
+        }
+
+        .preview-dragon-head {
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(45deg, #c1272d, #ff8c00);
+            border-radius: 8px;
+            box-shadow: 0 0 5px #ff8c00;
+        }
+
+        .preview-dragon {
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(45deg, #c1272d, #ffd700);
+            border-radius: 5px;
+        }
+
+        .preview-zongzi {
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(135deg, #228B22, #32CD32);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            position: relative;
+        }
+
+        .preview-zongzi::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 15%;
+            background: #8B4513;
+            border-radius: 3px;
+        }
+
+        .preview-obstacle {
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            border-radius: 5px;
+            box-shadow: inset 0 0 5px #5D4037;
+            position: relative;
+        }
+
+        .preview-obstacle::before {
+            content: "石";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255,255,255,0.3);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        #game-over-screen h2 {
+            color: #ff5252;
+            margin-bottom: 15px;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.5rem;
+            text-shadow: 0 0 5px rgba(255, 82, 82, 0.5);
+        }
+
+        .dragon-icon {
+            position: absolute;
+            font-size: 40px;
+            z-index: 1;
+            opacity: 0.1;
+            animation: floatIcon 20s linear infinite;
+        }
+
+        @keyframes floatIcon {
+            0% { transform: translateX(-100px) rotate(0deg); }
+            100% { transform: translateX(calc(100vw + 100px)) rotate(360deg); }
+        }
+
+        .dragon-icon:nth-child(1) { top: 10%; animation-delay: 0s; animation-duration: 25s; }
+        .dragon-icon:nth-child(2) { top: 30%; animation-delay: 5s; animation-duration: 30s; }
+        .dragon-icon:nth-child(3) { top: 50%; animation-delay: 10s; animation-duration: 20s; }
+        .dragon-icon:nth-child(4) { top: 70%; animation-delay: 15s; animation-duration: 35s; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="background-decor"></div>
+    
+    <!-- 漂浮的龙舟 -->
+    <div class="dragon-boat" style="animation-delay: 0s;"></div>
+    <div class="dragon-boat" style="bottom: 60px; animation-delay: -10s; animation-duration: 25s;"></div>
+    
+    <!-- 龙形装饰 -->
+    <div class="dragon-icon">🐉</div>
+    <div class="dragon-icon">🐉</div>
+    <div class="dragon-icon">🐉</div>
+    <div class="dragon-icon">🐉</div>
+    
+    <div class="game-container">
+        <div class="bamboo-border left"></div>
+        <div class="bamboo-border right"></div>
+        
+        <h1>端午龙舟贪吃粽</h1>
+        
+        <div class="game-screen" id="start-screen">
+            <div class="preview-container">
+                <div class="preview-item">
+                    <div class="preview-dragon-head"></div>
+                    <div class="preview-label">龙首</div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-dragon"></div>
+                    <div class="preview-label">龙身</div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-zongzi"></div>
+                    <div class="preview-label">粽子</div>
+                </div>
+                <div class="preview-item">
+                    <div class="preview-obstacle"></div>
+                    <div class="preview-label">礁石</div>
+                </div>
+            </div>
+            
+            <p>端午佳节，神龙戏水</p>
+            <p>收集粽子，避开礁石</p>
+            
+            <div class="controls">
+                <p>← ↑ → ↓ 控制神龙方向</p>
+                <p>空格键 暂停/继续游戏</p>
+            </div>
+            
+            <select class="difficulty-select" id="difficulty">
+                <option value="easy">轻舟模式</option>
+                <option value="medium" selected>竞渡模式</option>
+                <option value="hard">激流模式</option>
+                <option value="expert">险滩模式 (有礁石)</option>
+            </select>
+            
+            <button id="start-btn">龙舟启航</button>
+            
+            <div class="author-info">
+                <div>作者：锦鲤Sage</div>
+                <div>公众号：锦技社</div>
+                <div class="high-score">当前最高分: <span id="high-score">0</span></div>
+            </div>
+        </div>
+        
+        <div class="game-screen" id="game-screen" style="display:none;">
+            <div class="game-board" id="game-board"></div>
+            <div class="game-info">
+                <div>分数: <span id="score">0</span></div>
+                <div>龙身长: <span id="length">1</span></div>
+                <div>难度: <span id="current-difficulty">竞渡</span></div>
+            </div>
+        </div>
+        
+        <div class="game-screen" id="game-over-screen" style="display:none;">
+            <h2>游戏结束!</h2>
+            <p>最终得分: <span id="final-score">0</span></p>
+            <p>龙身长: <span id="final-length">0</span></p>
+            <p>难度: <span id="final-difficulty">竞渡</span></p>
+            <div class="high-score">最高分: <span id="final-high-score">0</span></div>
+            <button id="restart-btn">再战一场</button>
+            <button id="menu-btn">返回主殿</button>
+        </div>
+        
+        <!-- 音效元素 -->
+        <audio id="eat-sound" preload="auto">
+            <source src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" type="audio/mpeg">
+        </audio>
+        <audio id="gameover-sound" preload="auto">
+            <source src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script>
+        // 游戏常量
+        const GRID_SIZE = 20;
+        const CELL_SIZE = 20;
+        
+        // 游戏状态
+        let snake = [];
+        let food = {};
+        let obstacles = [];
+        let direction = 'right';
+        let nextDirection = 'right';
+        let score = 0;
+        let gameInterval;
+        let gameStarted = false;
+        let gamePaused = false;
+        let difficulty = 'medium';
+        let highScore = localStorage.getItem('dragonHighScore') || 0;
+
+        // DOM元素
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const gameBoard = document.getElementById('game-board');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const menuBtn = document.getElementById('menu-btn');
+        const scoreDisplay = document.getElementById('score');
+        const lengthDisplay = document.getElementById('length');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const finalLengthDisplay = document.getElementById('final-length');
+        const difficultySelect = document.getElementById('difficulty');
+        const currentDifficultyDisplay = document.getElementById('current-difficulty');
+        const finalDifficultyDisplay = document.getElementById('final-difficulty');
+        const highScoreDisplay = document.getElementById('high-score');
+        const finalHighScoreDisplay = document.getElementById('final-high-score');
+        const eatSound = document.getElementById('eat-sound');
+        const gameoverSound = document.getElementById('gameover-sound');
+
+        // 更新高分显示
+        highScoreDisplay.textContent = highScore;
+        
+        // 根据难度获取游戏速度
+        function getGameSpeed() {
+            switch(difficulty) {
+                case 'easy': return 200;
+                case 'medium': return 150;
+                case 'hard': return 100;
+                case 'expert': return 80;
+                default: return 150;
+            }
+        }
+        
+        // 根据难度获取难度名称
+        function getDifficultyName() {
+            switch(difficulty) {
+                case 'easy': return '轻舟';
+                case 'medium': return '竞渡';
+                case 'hard': return '激流';
+                case 'expert': return '险滩';
+                default: return '竞渡';
+            }
+        }
+
+        // 初始化游戏
+        function initGame() {
+            // 初始化龙 - 从中间开始，长度为3
+            snake = [
+                {x: 10, y: 10},
+                {x: 9, y: 10},
+                {x: 8, y: 10}
+            ];
+            
+            // 生成第一个粽子
+            generateFood();
+            
+            // 根据难度生成礁石
+            obstacles = [];
+            if (difficulty === 'expert') {
+                generateObstacles(5); // 生成5个礁石
+            }
+            
+            // 重置游戏状态
+            direction = 'right';
+            nextDirection = 'right';
+            score = 0;
+            scoreDisplay.textContent = score;
+            lengthDisplay.textContent = snake.length;
+            currentDifficultyDisplay.textContent = getDifficultyName();
+            
+            // 绘制游戏板
+            drawGame();
+        }
+
+        // 生成粽子
+        function generateFood() {
+            let newFood;
+            let onSnakeOrObstacle;
+            
+            do {
+                onSnakeOrObstacle = false;
+                newFood = {
+                    x: Math.floor(Math.random() * GRID_SIZE),
+                    y: Math.floor(Math.random() * GRID_SIZE)
+                };
+                
+                // 检查粽子是否在龙身上
+                for (let segment of snake) {
+                    if (segment.x === newFood.x && segment.y === newFood.y) {
+                        onSnakeOrObstacle = true;
+                        break;
+                    }
+                }
+                
+                // 检查粽子是否在礁石上
+                if (!onSnakeOrObstacle) {
+                    for (let obstacle of obstacles) {
+                        if (obstacle.x === newFood.x && obstacle.y === newFood.y) {
+                            onSnakeOrObstacle = true;
+                            break;
+                        }
+                    }
+                }
+            } while (onSnakeOrObstacle);
+            
+            food = newFood;
+        }
+        
+        // 生成礁石
+        function generateObstacles(count) {
+            for (let i = 0; i < count; i++) {
+                let newObstacle;
+                let onSnakeOrFoodOrOtherObstacle;
+                
+                do {
+                    onSnakeOrFoodOrOtherObstacle = false;
+                    newObstacle = {
+                        x: Math.floor(Math.random() * GRID_SIZE),
+                        y: Math.floor(Math.random() * GRID_SIZE)
+                    };
+                    
+                    // 检查礁石是否在龙身上
+                    for (let segment of snake) {
+                        if (segment.x === newObstacle.x && segment.y === newObstacle.y) {
+                            onSnakeOrFoodOrOtherObstacle = true;
+                            break;
+                        }
+                    }
+                    
+                    // 检查礁石是否在粽子上
+                    if (!onSnakeOrFoodOrOtherObstacle && 
+                        newObstacle.x === food.x && newObstacle.y === food.y) {
+                        onSnakeOrFoodOrOtherObstacle = true;
+                    }
+                    
+                    // 检查礁石是否在其他礁石上
+                    if (!onSnakeOrFoodOrOtherObstacle) {
+                        for (let obstacle of obstacles) {
+                            if (obstacle.x === newObstacle.x && obstacle.y === newObstacle.y) {
+                                onSnakeOrFoodOrOtherObstacle = true;
+                                break;
+                            }
+                        }
+                    }
+                } while (onSnakeOrFoodOrOtherObstacle);
+                
+                obstacles.push(newObstacle);
+            }
+        }
+
+        // 绘制游戏
+        function drawGame() {
+            // 清空游戏板
+            gameBoard.innerHTML = '';
+            
+            // 绘制龙
+            snake.forEach((segment, index) => {
+                const snakeElement = document.createElement('div');
+                snakeElement.style.gridRowStart = segment.y + 1;
+                snakeElement.style.gridColumnStart = segment.x + 1;
+                
+                if (index === 0) {
+                    snakeElement.classList.add('dragon-head', direction);
+                } else {
+                    snakeElement.classList.add('dragon');
+                }
+                
+                gameBoard.appendChild(snakeElement);
+            });
+            
+            // 绘制粽子
+            const foodElement = document.createElement('div');
+            foodElement.style.gridRowStart = food.y + 1;
+            foodElement.style.gridColumnStart = food.x + 1;
+            foodElement.classList.add('zongzi');
+            gameBoard.appendChild(foodElement);
+            
+            // 绘制礁石
+            obstacles.forEach(obstacle => {
+                const obstacleElement = document.createElement('div');
+                obstacleElement.style.gridRowStart = obstacle.y + 1;
+                obstacleElement.style.gridColumnStart = obstacle.x + 1;
+                obstacleElement.classList.add('obstacle');
+                gameBoard.appendChild(obstacleElement);
+            });
+        }
+
+        // 更新游戏状态
+        function update() {
+            if (gamePaused) return;
+            
+            // 更新方向
+            direction = nextDirection;
+            
+            // 计算龙头新位置
+            const head = {...snake[0]};
+            
+            switch(direction) {
+                case 'up': head.y--; break;
+                case 'down': head.y++; break;
+                case 'left': head.x--; break;
+                case 'right': head.x++; break;
+            }
+            
+            // 检查碰撞 - 游戏结束条件
+            if (
+                head.x < 0 || 
+                head.x >= GRID_SIZE || 
+                head.y < 0 || 
+                head.y >= GRID_SIZE ||
+                checkSelfCollision(head) ||
+                checkObstacleCollision(head)
+            ) {
+                gameOver();
+                return;
+            }
+            
+            // 添加新龙头
+            snake.unshift(head);
+            
+            // 检查是否吃到粽子
+            if (head.x === food.x && head.y === food.y) {
+                // 增加分数和长度
+                score += 10;
+                scoreDisplay.textContent = score;
+                lengthDisplay.textContent = snake.length;
+                
+                // 播放吃粽子音效
+                eatSound.currentTime = 0;
+                eatSound.play().catch(e => console.log("Audio play failed:", e));
+                
+                // 生成新粽子
+                generateFood();
+                
+                // 险滩模式每吃5个粽子增加一个礁石
+                if (difficulty === 'expert' && score % 50 === 0) {
+                    generateObstacles(1);
+                }
+            } else {
+                // 没吃到粽子，移除龙尾
+                snake.pop();
+            }
+            
+            // 重新绘制
+            drawGame();
+        }
+
+        // 检查是否撞到自己
+        function checkSelfCollision(head) {
+            for (let i = 1; i < snake.length; i++) {
+                if (snake[i].x === head.x && snake[i].y === head.y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        // 检查是否撞到礁石
+        function checkObstacleCollision(head) {
+            for (let obstacle of obstacles) {
+                if (obstacle.x === head.x && obstacle.y === head.y) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // 游戏结束
+        function gameOver() {
+            clearInterval(gameInterval);
+            gameStarted = false;
+            
+            // 更新最高分
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('dragonHighScore', highScore);
+            }
+            
+            // 显示最终得分
+            finalScoreDisplay.textContent = score;
+            finalLengthDisplay.textContent = snake.length;
+            finalDifficultyDisplay.textContent = getDifficultyName();
+            finalHighScoreDisplay.textContent = highScore;
+            
+            // 播放游戏结束音效
+            gameoverSound.currentTime = 0;
+            gameoverSound.play().catch(e => console.log("Audio play failed:", e));
+            
+            // 切换到游戏结束界面
+            gameScreen.style.display = 'none';
+            gameOverScreen.style.display = 'block';
+        }
+
+        // 设置事件监听器
+        startBtn.addEventListener('click', () => {
+            difficulty = difficultySelect.value;
+            startScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            startGame();
+        });
+
+        restartBtn.addEventListener('click', () => {
+            gameOverScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            startGame();
+        });
+        
+        menuBtn.addEventListener('click', () => {
+            gameOverScreen.style.display = 'none';
+            startScreen.style.display = 'block';
+            highScoreDisplay.textContent = highScore;
+        });
+        
+        difficultySelect.addEventListener('change', () => {
+            highScoreDisplay.textContent = highScore;
+        });
+
+        // 键盘控制
+        document.addEventListener('keydown', (e) => {
+            if (!gameStarted) return;
+            
+            // 空格键暂停/继续游戏
+            if (e.key === ' ') {
+                gamePaused = !gamePaused;
+                return;
+            }
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    if (direction !== 'down') nextDirection = 'up';
+                    break;
+                case 'ArrowDown':
+                    if (direction !== 'up') nextDirection = 'down';
+                    break;
+                case 'ArrowLeft':
+                    if (direction !== 'right') nextDirection = 'left';
+                    break;
+                case 'ArrowRight':
+                    if (direction !== 'left') nextDirection = 'right';
+                    break;
+            }
+        });
+
+        // 开始游戏
+        function startGame() {
+            initGame();
+            gameStarted = true;
+            gamePaused = false;
+            
+            if (gameInterval) {
+                clearInterval(gameInterval);
+            }
+            
+            gameInterval = setInterval(update, getGameSpeed());
+        }
+    </script>
+</body>
+</html>
