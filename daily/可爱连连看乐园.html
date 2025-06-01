@@ -41,22 +41,22 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 20px;
+            padding: 15px; /* Reduced padding for mobile */
             width: 100%;
             min-height: 80vh; 
         }
         .main-title {
-            font-size: 3.5rem; 
+            font-size: 2.8rem; /* Adjusted for mobile */
             color: white;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.25);
-            margin-bottom: 40px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.25); /* Slightly softer shadow */
+            margin-bottom: 30px; /* Adjusted margin */
             font-weight: 900; 
             letter-spacing: -0.02em;
-            line-height: 1.2;
+            line-height: 1.1;
         }
         #initialStartGameButton {
-            padding: 20px 45px;
-            font-size: 1.8rem; 
+            padding: 15px 35px; /* Adjusted padding */
+            font-size: 1.5rem; 
             font-weight: 800;
             color: var(--text-dark);
             background-color: var(--cute-green);
@@ -73,27 +73,27 @@
         }
 
         .level-select-title {
-            font-size: 2.5rem;
+            font-size: 2rem; /* Adjusted for mobile */
             color: white;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            margin-bottom: 25px;
+            margin-bottom: 20px; /* Adjusted margin */
             font-weight: 800;
         }
         #levelListContainer {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            gap: 15px; 
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Smaller min for mobile */
+            gap: 10px; 
             width: 100%;
-            max-width: 700px; 
+            max-width: 95vw; /* Use viewport width more effectively */
         }
         .level-button {
-            padding: 12px 15px;
-            font-size: 1rem; 
+            padding: 10px 12px; /* Adjusted padding */
+            font-size: 0.9rem; 
             font-weight: 700;
             color: var(--text-dark);
             background-color: var(--cute-yellow);
             border: 2px solid rgba(255,255,255,0.5); 
-            border-radius: 18px; 
+            border-radius: 15px; 
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
             box-shadow: var(--button-shadow);
@@ -104,7 +104,7 @@
             justify-content: center;
         }
         .level-button:hover:not(:disabled) {
-            transform: translateY(-3px) scale(1.03);
+            transform: translateY(-2px) scale(1.02); /* More subtle hover for mobile */
             box-shadow: var(--button-hover-shadow);
             background-color: #fff7d6; 
         }
@@ -116,68 +116,71 @@
             border-color: rgba(0,0,0,0.1);
         }
          .level-button .level-name {
-            font-size:0.8em; 
+            font-size:0.75em; 
             color: var(--text-medium);
-            margin-top: 4px;
+            margin-top: 3px;
         }
         .level-button .stars-display {
-            font-size: 1.1em; 
-            margin-top: 6px;
+            font-size: 1em; 
+            margin-top: 5px;
             line-height: 1;
         }
         .level-button .stars-display .star-filled { color: var(--star-filled-color); }
         .level-button .stars-display .star-empty { color: var(--star-empty-color); }
          .level-button .lock-icon {
-            margin-left: 8px;
-            font-size: 0.9em;
+            margin-left: 6px;
+            font-size: 0.8em;
         }
 
         .game-wrapper { 
             display: none; 
             flex-direction: column;
             align-items: center;
+            width: 100%; /* Ensure wrapper takes full width for centering game-container */
         }
         .game-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px; 
+            padding: 15px; /* Reduced padding for mobile */
             background-color: rgba(255, 255, 255, 0.92); 
             backdrop-filter: blur(8px);
-            border-radius: 24px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
-            width: 90vw; 
-            max-width: 650px; 
+            border-radius: 20px; /* Slightly less rounded for smaller screen */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1); 
+            width: 95vw; 
+            max-width: 600px; /* Adjusted max-width */
             border: 1px solid rgba(255,255,255,0.25);
-            margin: 20px 0; 
+            margin: 10px 0; /* Reduced vertical margin */
         }
         .game-title { 
-            font-size: 1.8rem; 
+            font-size: 1.5rem; /* Adjusted for mobile */
             font-weight: 800; 
-            margin-bottom: 15px; 
+            margin-bottom: 10px; /* Reduced margin */
             color: var(--text-dark);
             text-align: center;
         }
         .info-panel {
             display: flex;
-            flex-direction: column; 
+            flex-direction: row; /* Keep horizontal for info, wrap if needed */
+            flex-wrap: wrap;
+            justify-content: center; /* Center items when wrapped */
             align-items: center; 
             gap: 8px; 
             width: 100%;
-            max-width: 260px; 
-            margin-bottom: 15px;
-            font-size: 1rem; 
+            max-width: 100%; /* Allow full width */
+            margin-bottom: 10px; /* Reduced margin */
+            font-size: 0.9rem; 
             color: var(--text-medium);
             font-weight: 600; 
         }
         .info-panel span {
-            padding: 6px 10px; 
+            padding: 5px 8px; 
             background-color: var(--cute-yellow); 
-            border-radius: 10px; 
+            border-radius: 8px; 
             text-align: center;
-            width: fit-content; 
             color: var(--text-dark);
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin: 2px; /* Add small margin for wrapped items */
         }
          #errorsDisplay { 
             color: #ef4444; 
@@ -188,12 +191,13 @@
             width: 100%; 
             display: flex; 
             justify-content: center;
+            margin-bottom: 10px; /* Add some space below board */
         }
 
         .game-board { 
             display: grid;
             border: 2px solid var(--cute-purple); 
-            border-radius: 16px; 
+            border-radius: 12px; /* Adjusted */
             background-color: rgba(255, 255, 255, 0.7); 
             position: relative; 
             z-index: 1; 
@@ -207,7 +211,7 @@
         .tile {
             background-color: var(--cute-purple); 
             border: 1px solid rgba(0,0,0,0.05); 
-            border-radius: 10px; 
+            border-radius: 8px; /* Adjusted */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -223,21 +227,21 @@
         }
         .tile:not(.selected):not(.empty):not(.cleared):hover {
             background-color: var(--cute-pink);
-            transform: translateY(-2px) scale(1.05); 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-1px) scale(1.02); 
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
         .tile.selected {
             background-color: var(--cute-green); 
             border-color: #76D7C4; 
             color: var(--text-dark); 
-            transform: scale(1.1); 
-            box-shadow: 0 0 12px var(--cute-green), 0 0 5px var(--cute-green); 
+            transform: scale(1.08); 
+            box-shadow: 0 0 10px var(--cute-green), 0 0 4px var(--cute-green); 
         }
         .tile.hint-highlight { 
             background-color: #FFD700 !important; 
             border-color: #FFC400 !important; 
-            box-shadow: 0 0 15px #FFD700, 0 0 8px #FFC400 !important;
-            transform: scale(1.12) !important; 
+            box-shadow: 0 0 12px #FFD700, 0 0 6px #FFC400 !important;
+            transform: scale(1.1) !important; 
         }
         .tile.empty { 
             background-color: transparent !important; 
@@ -253,20 +257,20 @@
             transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease;
         }
         .controls {
-            margin-top: 20px; 
+            margin-top: 15px; 
             display: flex;
             flex-wrap: wrap; 
             justify-content: center; 
-            gap: 10px; 
+            gap: 8px; 
         }
         .btn {
-            padding: 10px 18px; 
-            font-size: 0.9rem; 
+            padding: 8px 15px; 
+            font-size: 0.85rem; 
             font-weight: 700; 
             color: white;
             background-color: var(--cute-blue);
             border: none;
-            border-radius: 25px; 
+            border-radius: 20px; 
             cursor: pointer;
             transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
             display: flex;
@@ -276,12 +280,12 @@
             text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
         }
         .btn svg { 
-            width: 1.1em;
-            height: 1.1em;
-            margin-right: 0.5em;
+            width: 1em;
+            height: 1em;
+            margin-right: 0.4em;
         }
         .btn:hover {
-            transform: translateY(-2px) scale(1.03);
+            transform: translateY(-1px) scale(1.02);
             box-shadow: var(--button-hover-shadow);
         }
         .btn:active {
@@ -295,16 +299,16 @@
 
         #message-box { 
             position: fixed;
-            top: 20px; 
+            top: 15px; 
             left: 50%;
             transform: translateX(-50%) translateY(-60px);
             color: var(--text-dark); 
-            padding: 12px 20px; 
-            border-radius: 12px; 
+            padding: 10px 18px; 
+            border-radius: 10px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             z-index: 1000;
             opacity: 0;
-            font-size: 1rem; 
+            font-size: 0.95rem; 
             font-weight: 600;
             transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: none;
@@ -342,12 +346,12 @@
         }
         .modal-content {
             background-color: white;
-            padding: 30px 40px;
+            padding: 25px 30px; /* Adjusted padding */
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             text-align: center;
-            max-width: 90vw;
-            width: 400px; 
+            max-width: 85vw; /* Max width for modal on small screens */
+            width: 350px; 
             transform: scale(0.9);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
@@ -355,16 +359,16 @@
             transform: scale(1);
         }
         .modal-content h2 {
-            font-size: 2rem;
+            font-size: 1.8rem; /* Adjusted for mobile */
             font-weight: 800;
             color: var(--text-dark);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .modal-content p {
-            font-size: 1.1rem;
+            font-size: 1rem; /* Adjusted for mobile */
             color: var(--text-medium);
-            margin-bottom: 25px;
-            line-height: 1.6;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
         .modal-buttons {
             display: flex;
@@ -373,9 +377,11 @@
             gap: 10px;
         }
         .modal-buttons .btn { 
-            min-width: 150px; 
+            min-width: 140px; 
             width: 100%; 
-            max-width: 220px; 
+            max-width: 200px; 
+            font-size: 0.9rem; /* Match other buttons */
+            padding: 10px 15px; /* Match other buttons */
         }
 
 
@@ -610,15 +616,13 @@
             sounds.gameOver = new Tone.Synth({ oscillator: { type: "sawtooth" }, envelope: { attack: 0.1, decay: 0.8, sustain: 0, release: 0.5 } }).toDestination();
             sounds.buttonClick = new Tone.MembraneSynth({ pitchDecay: 0.01, octaves: 2, envelope: { attack: 0.001, decay: 0.1, sustain: 0 } }).toDestination();
             
-            sounds.bgmSynth = new Tone.Synth({ // A gentler synth for BGM
-                oscillator: { type: 'sine' }, // Sine wave is softer
+            sounds.bgmSynth = new Tone.Synth({ 
+                oscillator: { type: 'sine' }, 
                 envelope: { attack: 0.1, decay: 0.3, sustain: 0.1, release: 1 },
-                volume: -25 // Quieter BGM
+                volume: -25 
             }).toDestination();
-             // Add a filter for a softer BGM sound
             const filter = new Tone.Filter(800, "lowpass").toDestination();
             sounds.bgmSynth.connect(filter);
-
 
             sounds.bgmLoops = {
                 "入门": new Tone.Loop(time => {
@@ -652,7 +656,7 @@
                     sounds.bgmSynth.triggerAttackRelease(note, "4n", time);
                 }, "1n"),
                 "天气": new Tone.Loop(time => {
-                    sounds.bgmSynth.triggerAttackRelease("C4", "1m", time, 0.8); // Longer note with velocity
+                    sounds.bgmSynth.triggerAttackRelease("C4", "1m", time, 0.8); 
                 }, "1m"),
                 "运动": new Tone.Loop(time => {
                     sounds.bgmSynth.triggerAttackRelease("D4", "8n", time);
@@ -714,8 +718,7 @@
                 console.log(`Playing BGM for theme: ${themeName}`);
             } else {
                 console.warn(`BGM for theme "${themeName}" not found. Playing default.`);
-                // Fallback to a default BGM if specific theme BGM is missing
-                if (sounds.bgmLoops["入门"]) { // Assuming "入门" is a safe default
+                if (sounds.bgmLoops["入门"]) { 
                     currentBGMLoop = sounds.bgmLoops["入门"];
                     currentBGMLoop.start(0).stop(gameParams.timeLimit + 2);
                     Tone.Transport.start();
