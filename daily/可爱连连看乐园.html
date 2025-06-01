@@ -450,9 +450,7 @@
     <div id="mainMenuContainer">
         </div>
 
-    <div class="game-wrapper">
-        <div class="game-container">
-            <h1 class="game-title" id="levelTitle">加油！连起来！</h1>
+    <div class="game-wrapper"> <div class="game-container"> <h1 class="game-title" id="levelTitle">加油！连起来！</h1>
             <div class="info-panel">
                 <span id="timer">时间: 00:00</span>
                 <span id="score">得分: 0</span>
@@ -460,8 +458,7 @@
                 <span id="errorsDisplay">错误: 0/0</span>
             </div>
 
-            <div class="board-area">
-                <div id="gameBoard" class="game-board">
+            <div class="board-area"> <div id="gameBoard" class="game-board">
                     </div>
                 <canvas id="pathCanvas"></canvas>
             </div>
@@ -513,7 +510,7 @@
 
         // --- Emoji Icon Sets for Themes ---
         const EMOJI_SETS = {
-            faces: ['😀', '😂', '😊', '😍', '🤔', '😎', '👻', '�', '👾', '🤖', '🎃', '🤡', '🥳', '🥺', '🤩', '😱', '😴', '🥴', '🤧', '🤠'],
+            faces: ['😀', '😂', '😊', '😍', '🤔', '😎', '👻', '👽', '👾', '🤖', '🎃', '🤡', '🥳', '🥺', '🤩', '😱', '😴', '🥴', '🤧', '🤠'],
             fruits: ['🍓', '🍉', '🍎', '🍊', '🍇', '🍍', '🥝', '🥭', '🍑', '🍒', '🍌', '🥥', '🥑', '🍈', '🫐', '🍐', '🍋', '🌶️', '🌽', '🥕'],
             animals: ['🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐙', '🐵', '🦄', '🐔', '🐧', '🦉', '🦋', '🐌', '🐞', '🐢', '🐬'],
             objects: ['⚽', '🏀', '🏈', '🎱', '🎁', '🎈', '🎉', '🎄', '💡', '💻', '📱', '⏰', '💎', '🔔', '🔑', '👑', '☂️', '🎨', '📚', '✏️'],
@@ -789,17 +786,17 @@
         function checkWinCondition(){ /* ... (same as previous version) ... */
             if(remainingTiles === 0 && gameActive){ clearInterval(timerInterval); gameActive = false; const currentLevel = levels[currentLevelIndex]; let starsEarned = 0; const timePercentage = (timeLeft / gameParams.timeLimit) * 100; if (timePercentage > 66) starsEarned = 3; else if (timePercentage > 33) starsEarned = 2; else if (timeLeft >= 0) starsEarned = 1; levels[currentLevelIndex].starsEarned = Math.max(levels[currentLevelIndex].starsEarned || 0, starsEarned); saveProgress(); stopBGM(); playSound('win'); gameBoardElement.style.pointerEvents = 'none'; clearPathCanvas(); let modalTitle = `太棒了！`; let modalMessage = `${currentLevel.levelName} 完成！<br>你获得了 ${'★'.repeat(starsEarned)}${'☆'.repeat(3-starsEarned)}！`; let modalButtons = []; if (currentLevelIndex + 1 < levels.length) { maxUnlockedLevel = Math.max(maxUnlockedLevel, currentLevel.levelNumber + 1); saveProgress(); modalButtons.push({ text: "下一关卡", action: () => { currentLevelIndex++; actualGameStart(); }, styleClass: "bg-green-500" }); } else { modalMessage += "<br>所有关卡都已完成！🥳"; } modalButtons.push({ text: "重玩本关", action: () => initGame(currentLevelIndex) }); modalButtons.push({ text: "返回选关", action: showLevelSelectScreen, styleClass: "bg-gray-400" }); createEndGameModal(modalTitle, modalMessage, modalButtons); }
         }
-        function clearTiles(t1,t2,cp){drawConnectionPath(cp);playSound('match');setTimeout(async()=>{t1.element.classList.add('cleared');t1.element.classList.remove('selected');t2.element.classList.add('cleared');t2.element.classList.remove('selected');gameBoardArray[t1.r][t1.c]=null;gameBoardArray[t2.r][t2.c]=null;score+=10;remainingTiles-=2;scoreDisplay.textContent=`得分: ${score}`; showMessage("成功消除!", "success", 1000); if(remainingTiles>0&&gameActive){await new Promise(r=>setTimeout(r,50));await checkAndHandleNoMoreMoves()}setTimeout(checkWinCondition,100)},100)}
+        function clearTiles(t1,t2,cp){drawConnectionPath(cp);playSound('match');setTimeout(async()=>{t1.element.classList.add('cleared');t1.element.classList.remove('selected');t2.element.classList.add('cleared');t2.element.classList.remove('selected');gameBoardArray[t1.r][t1.c]=null;gameBoardArray[t2.r][t2.c]=null;score+=10;remainingTiles-=2;scoreDisplay.textContent=`得分: ${score}`; showMessage("成功消除!", "success", 1000); if(remainingTiles>0&&gameActive){await new Promise(r=>setTimeout(r,50));await checkAndHandleNoMoreMoves()}setTimeout(checkWinCondition，100)}，100)}
 
         // --- Game Setup and UI ---
         function createTilesList() { /* ... (same as previous version) ... */
-            const numTileTypes = gameParams.tileTypesCount; const totalTilesForLevel = gameParams.totalLogicalTiles; const currentIconSet = gameParams.currentIconSet; if (totalTilesForLevel % 2 !== 0) { showMessage("当前关卡棋盘大小设置错误!", "error"); return []; } if (numTileTypes > currentIconSet.length) { console.warn(`Level requires ${numTileTypes} types, but icon set only has ${currentIconSet.length}. Using all available.`); } const tiles = []; const iconsToUse = currentIconSet.slice(0, Math.min(numTileTypes, currentIconSet.length)); const numPairs = totalTilesForLevel / 2; for (let i = 0; i < numPairs; i++) { const icon = iconsToUse[i % iconsToUse.length]; tiles.push(icon, icon); } shuffleArray(tiles); return tiles;
+            const numTileTypes = gameParams.tileTypesCount; const totalTilesForLevel = gameParams.totalLogicalTiles; const currentIconSet = gameParams.currentIconSet; if (totalTilesForLevel % 2 !== 0) { showMessage("当前关卡棋盘大小设置错误!", "error"); return []; } if (numTileTypes > currentIconSet.length) { console.warn(`Level requires ${numTileTypes} types, but icon set only has ${currentIconSet.length}. Using all available.`); } const tiles = []; const iconsToUse = currentIconSet.slice(0, Math.min(numTileTypes, currentIconSet。length)); const numPairs = totalTilesForLevel / 2; for (let i = 0; i < numPairs; i++) { const icon = iconsToUse[i % iconsToUse.length]; tiles.push(icon, icon); } shuffleArray(tiles); return tiles;
         }
         function renderBoard(){ /* ... (same as previous version, uses updated gameParams) ... */
             gameBoardElement.innerHTML=''; gameBoardElement.style.gridTemplateColumns=`repeat(${gameParams.boardColsLogical}, ${gameParams.tileWidth}px)`; gameBoardElement.style.gridTemplateRows=`repeat(${gameParams.boardRowsLogical}, ${gameParams.tileHeight}px)`; gameBoardElement.style.gap=`${gameParams.gap}px`; gameBoardElement.style.padding=`${gameParams.boardPadding}px`; gameBoardElement.style.pointerEvents='auto'; setTimeout(() => { setupCanvas(); }, 0); for(let r_arr = 1; r_arr <= gameParams.boardRowsLogical; r_arr++) { for(let c_arr = 1; c_arr <= gameParams.boardColsLogical; c_arr++) { const tileDiv=document.createElement('div'); tileDiv.dataset.row = r_arr; tileDiv.dataset.col = c_arr; const icon=gameBoardArray[r_arr][c_arr]; if(icon){tileDiv.classList.add('tile');tileDiv.textContent=icon;tileDiv.addEventListener('click',handleTileClick)} else {tileDiv.classList.add('tile','empty');} gameBoardElement.appendChild(tileDiv); } }
         }
         async function handleTileClick(e){ /* ... (same as previous version) ... */
-            const clickedElement=e.currentTarget;if(!clickedElement||!clickedElement.dataset)return; const audioCanPlay = await ensureAudioStarted(); if(!gameActive)return; const rowStr=clickedElement.dataset.row, colStr=clickedElement.dataset.col;if(typeof rowStr==='undefined'||typeof colStr==='undefined')return; const r=parseInt(rowStr),c=parseInt(colStr);if(isNaN(r)||isNaN(c))return; if(!gameBoardArray[r] || typeof gameBoardArray[r][c] === 'undefined'){ console.error("Clicked tile's array data is invalid", {r,c}); return; } const icon=gameBoardArray[r][c];if(!icon||clickedElement.classList.contains('cleared'))return; if(audioCanPlay)playSound('click'); const hintHighlightedTiles=gameBoardElement.querySelectorAll('.hint-highlight'); hintHighlightedTiles.forEach(ht=>ht.classList.remove('hint-highlight')); if(hintHighlightTimeout)clearTimeout(hintHighlightTimeout); if(!firstSelectedTile){firstSelectedTile={element:clickedElement,r,c,icon:icon};clickedElement.classList.add('selected')} else{ if(firstSelectedTile.element===clickedElement){clickedElement.classList.remove('selected');firstSelectedTile=null} else{ const secondSelectedTile={element:clickedElement,r,c,icon:icon}; if(firstSelectedTile.icon===secondSelectedTile.icon){ const connectionPath=canConnect(firstSelectedTile,secondSelectedTile); if(connectionPath){clearTiles(firstSelectedTile,secondSelectedTile,connectionPath);firstSelectedTile=null} else{ showMessage("这两个图案无法连接!","error",1500);if(audioCanPlay)playSound('error'); connectionErrors++; updateErrorsDisplay(); if (connectionErrors >= gameParams.maxErrorsAllowed) { handleGameOver("errors"); return; } firstSelectedTile.element.classList.remove('selected');firstSelectedTile=null; } }else{ showMessage("图案不匹配!","error",1e3);if(audioCanPlay)playSound('error'); connectionErrors++; updateErrorsDisplay(); if (connectionErrors >= gameParams.maxErrorsAllowed) { handleGameOver("errors"); return; } firstSelectedTile.element.classList.remove('selected'); secondSelectedTile.element.classList.add('selected');firstSelectedTile=secondSelectedTile; } } }
+            const clickedElement=e.currentTarget;if(!clickedElement||!clickedElement.dataset)return; const audioCanPlay = await ensureAudioStarted(); if(!gameActive)return; const rowStr=clickedElement.dataset.row, colStr=clickedElement.dataset.col;if(typeof rowStr==='undefined'||typeof colStr==='undefined')return; const r=parseInt(rowStr),c=parseInt(colStr);if(isNaN(r)||isNaN(c))return; if(!gameBoardArray[r] || typeof gameBoardArray[r][c] === 'undefined'){ console.error("Clicked tile's array data is invalid"， {r，c}); return; } const icon=gameBoardArray[r][c];if(!icon||clickedElement.classList.contains('cleared'))return; if(audioCanPlay)playSound('click'); const hintHighlightedTiles=gameBoardElement.querySelectorAll('.hint-highlight'); hintHighlightedTiles.forEach(ht=>ht.classList.remove('hint-highlight')); if(hintHighlightTimeout)clearTimeout(hintHighlightTimeout); if(!firstSelectedTile){firstSelectedTile={element:clickedElement,r,c,icon:icon};clickedElement.classList.add('selected')} else{ if(firstSelectedTile。element===clickedElement){clickedElement.classList。remove('selected');firstSelectedTile=null} else{ const secondSelectedTile={element:clickedElement,r，c，icon:icon}; if(firstSelectedTile。icon===secondSelectedTile。icon){ const connectionPath=canConnect(firstSelectedTile，secondSelectedTile); if(connectionPath){clearTiles(firstSelectedTile，secondSelectedTile，connectionPath);firstSelectedTile=null} else{ showMessage("这两个图案无法连接!"，"error"，1500);if(audioCanPlay)playSound('error'); connectionErrors++; updateErrorsDisplay(); if (connectionErrors >= gameParams。maxErrorsAllowed) { handleGameOver("errors"); return; } firstSelectedTile。element。classList。remove('selected');firstSelectedTile=null; } }else{ showMessage("图案不匹配!"，"error"，1e3);if(audioCanPlay)playSound('error'); connectionErrors++; updateErrorsDisplay(); if (connectionErrors >= gameParams。maxErrorsAllowed) { handleGameOver("errors"); return; } firstSelectedTile。element。classList。remove('selected'); secondSelectedTile.element。classList.add('selected');firstSelectedTile=secondSelectedTile; } } }
         }
         async function shuffleBoard(isAutoShuffle=false){ /* ... (same as previous version) ... */
             let audioCanPlay = false; if(!isAutoShuffle){audioCanPlay = await ensureAudioStarted();if(audioCanPlay)playSound('buttonClick')} if(!gameActive&&remainingTiles>0){}else if(!gameActive&&remainingTiles===0){showMessage("游戏已通关，无需洗牌。","info");return}else if(!gameActive){showMessage("游戏尚未开始，无需洗牌。","info");return}if(remainingTiles===0){showMessage("所有方块都已消除，无需洗牌。","info");return} const currentTilesData=[];for(let r=1;r<=gameParams.boardRowsLogical;r++)for(let c=1;c<=gameParams.boardColsLogical;c++)if(gameBoardArray[r][c]!==null)currentTilesData.push({icon:gameBoardArray[r][c],r_orig:r,c_orig:c});if(currentTilesData.length===0){if(!isAutoShuffle)showMessage("没有可洗牌的方块了。","info");return} const iconsOnly=currentTilesData.map(t=>t.icon);shuffleArray(iconsOnly);for(let i=0;i<currentTilesData.length;i++){const originalPos=currentTilesData[i];gameBoardArray[originalPos.r_orig][originalPos.c_orig]=iconsOnly[i]} if(firstSelectedTile&&firstSelectedTile.element)firstSelectedTile.element.classList.remove('selected');firstSelectedTile=null;clearPathCanvas();renderBoard();if(!isAutoShuffle){showMessage("棋盘已洗牌!","info",1500);autoShuffleAttempts=0}await new Promise(r=>setTimeout(r,50));await checkAndHandleNoMoreMoves()
@@ -810,50 +807,12 @@
             clearTimeout(resizeTimeout);resizeTimeout=setTimeout(async()=>{ updateGameParametersAndStyles(); if(gameActive && gameWrapper.style.display !== 'none') { await initGame(currentLevelIndex); } else if (mainMenuContainer.style.display !== 'none' && !gameActive) { if (mainMenuContainer.querySelector('#levelListContainer')) { showLevelSelectScreen(); } else { showMainMenuScreen(); } } },250)
         }
 
-        function showMainMenuScreen() {
-            // FIX: Removed leading space from template literal
-            mainMenuContainer.innerHTML = `<h1 class="main-title">可爱连连看乐园</h1><button id="initialStartGameButton">开始挑战！</button>`;
-            mainMenuContainer.style.display = 'flex';
-            gameWrapper.style.display = 'none';
-            stopBGM();
-            const initialStartBtn = document.getElementById('initialStartGameButton');
-            if (initialStartBtn) {
-                initialStartBtn.onclick = async () => {
-                    const audioCanPlay = await ensureAudioStarted();
-                    if(audioCanPlay) playSound('buttonClick');
-                    showLevelSelectScreen();
-                };
-            }
+        function showMainMenuScreen() { /* ... (same as previous version) ... */
+            mainMenuContainer.innerHTML = ` <h1 class="main-title">可爱连连看乐园</h1> <button id="initialStartGameButton">开始挑战！</button> `; mainMenuContainer.style.display = 'flex'; gameWrapper.style.display = 'none'; stopBGM(); const initialStartBtn = document.getElementById('initialStartGameButton'); if (initialStartBtn) { initialStartBtn.onclick = async () => { const audioCanPlay = await ensureAudioStarted(); if(audioCanPlay) playSound('buttonClick'); showLevelSelectScreen(); }; }
         }
 
-        function showLevelSelectScreen() {
-            // FIX: Removed leading space from template literal if any existed (this one was fine)
-            mainMenuContainer.innerHTML = '<h1 class="level-select-title">选择关卡</h1>';
-            const levelListDiv = document.createElement('div');
-            levelListDiv.id = 'levelListContainer';
-            levels.forEach((level, index) => {
-                const levelButton = document.createElement('button');
-                const stars = level.starsEarned || 0;
-                const starIcons = `<span class="stars-display"><span class="star-filled">${'★'.repeat(stars)}</span><span class="star-empty">${'☆'.repeat(3-stars)}</span></span>`;
-                levelButton.innerHTML = `第 ${level.levelNumber} 关 <br> <span class="level-name">${level.levelName}</span> ${starIcons}`;
-                levelButton.className = 'level-button';
-                if (level.levelNumber > maxUnlockedLevel) {
-                    levelButton.disabled = true;
-                    levelButton.innerHTML = `第 ${level.levelNumber} 关 <br> <span class="level-name">${level.levelName}</span> <span class="lock-icon">🔒</span>`;
-                } else {
-                    levelButton.onclick = async () => {
-                        const audioCanPlay = await ensureAudioStarted();
-                        if(audioCanPlay) playSound('buttonClick');
-                        currentLevelIndex = index;
-                        actualGameStart();
-                    };
-                }
-                levelListDiv.appendChild(levelButton);
-            });
-            mainMenuContainer.appendChild(levelListDiv);
-            mainMenuContainer.style.display = 'flex';
-            gameWrapper.style.display = 'none';
-            stopBGM();
+        function showLevelSelectScreen() { /* ... (same as previous version) ... */
+            mainMenuContainer.innerHTML = '<h1 class="level-select-title">选择关卡</h1>'; const levelListDiv = document.createElement('div'); levelListDiv.id = 'levelListContainer'; levels.forEach((level, index) => { const levelButton = document.createElement('button'); const stars = level.starsEarned || 0; const starIcons = `<span class="stars-display"><span class="star-filled">${'★'.repeat(stars)}</span><span class="star-empty">${'☆'.repeat(3-stars)}</span></span>`; levelButton.innerHTML = `第 ${level.levelNumber} 关 <br> <span class="level-name">${level。levelName}</span> ${starIcons}`; levelButton.className = 'level-button'; if (level.levelNumber > maxUnlockedLevel) { levelButton.disabled = true; levelButton.innerHTML = `第 ${level.levelNumber} 关 <br> <span class="level-name">${level.levelName}</span> <span class="lock-icon">🔒</span>`; } else { levelButton.onclick = async () => { const audioCanPlay = await ensureAudioStarted(); if(audioCanPlay) playSound('buttonClick'); currentLevelIndex = index; actualGameStart(); }; } levelListDiv.appendChild(levelButton); }); mainMenuContainer.appendChild(levelListDiv); mainMenuContainer.style.display = 'flex'; gameWrapper.style.display = 'none'; stopBGM();
         }
 
         async function actualGameStart() { /* ... (same as previous version) ... */
