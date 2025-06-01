@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --tile-font-size: 26px; /* 会被JS动态修改 */
+            --tile-font-size: 26px; /* Will be dynamically modified by JS */
             --cute-blue: #89CFF0;
             --cute-pink: #FFB6C1;
             --cute-green: #90EE90;
@@ -32,7 +32,7 @@
             min-height: 100vh;
             margin: 0;
             transition: background 0.5s ease-in-out;
-            overflow-x: hidden; /* 防止水平滚动 */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
             background: linear-gradient(135deg, var(--cute-pink) 0%, var(--cute-blue) 100%);
         }
         #mainMenuContainer {
@@ -138,20 +138,20 @@
             align-items: center;
             width: 100%;
         }
-        .game-container { /* 游戏区域主容器 */
+        .game-container { /* Main container for the game area */
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 15px; /* 移动端内边距 */
+            padding: 15px; /* Padding for mobile */
             background-color: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(8px);
             border-radius: 20px;
             box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            width: 95vw; /* 容器宽度 */
+            width: 95vw; /* Container width */
             max-width: 98vw; 
             border: 1px solid rgba(255,255,255,0.25);
             margin: 10px 0;
-            box-sizing: border-box; /* 确保padding和border不增加总宽度 */
+            box-sizing: border-box; /* Ensure padding and border do not increase total width */
         }
         .game-title {
             font-size: 1.5rem;
@@ -160,26 +160,21 @@
             color: var(--text-dark);
             text-align: center;
         }
+        /* MODIFIED .info-panel CSS */
         .info-panel {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
+            flex-direction: row; /* All items in one row */
+            align-items: center; /* Vertically align items */
+            justify-content: space-between; /* Distribute items across the width */
+            flex-wrap: wrap; /* Allow wrapping on very small screens */
+            gap: 6px; /* Gap between items */
             width: 100%;
-            max-width: 100%;
             margin-bottom: 10px;
-            font-size: 0.9rem;
+            font-size: 0.75rem; /* Smaller base font size for info items */
             color: var(--text-medium);
             font-weight: 600;
         }
-        .info-row {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            max-width: 320px;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        /* MODIFIED .info-panel span CSS */
         .info-panel span {
             padding: 5px 8px;
             background-color: var(--cute-yellow);
@@ -187,29 +182,31 @@
             text-align: center;
             color: var(--text-dark);
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            margin: 2px;
-            min-width: 90px;
+            margin: 2px 0; /* Vertical margin, horizontal handled by gap */
+            flex: 1 1 auto; /* Allow shrinking and growing, auto basis */
+            min-width: 70px; /* Minimum width to prevent items from becoming too small */
         }
-         #errorsDisplay {
+         #errorsDisplay { /* Existing style, ensure it's preserved */
             color: #ef4444;
         }
+        /* REMOVED .info-row CSS as it's no longer used */
 
-        .board-area { /* 棋盘和路径画布的直接容器 */
+        .board-area { /* Direct container for the board and path canvas */
             position: relative;
-            width: 100%; /* 占满 game-container 的可用宽度 */
+            width: 100%; /* Occupy the full available width of game-container */
             display: flex;
             justify-content: center;
             margin-bottom: 10px;
         }
 
-        .game-board { /* 实际的棋盘网格 */
+        .game-board { /* The actual game grid */
             display: grid;
-            border: 2px solid var(--cute-purple); /* 棋盘边框 */
+            border: 2px solid var(--cute-purple); /* Board border */
             border-radius: 12px;
             background-color: rgba(255, 255, 255, 0.7);
             position: relative;
             z-index: 1;
-            box-sizing: border-box; /* 边框和内边距包含在宽高内 */
+            box-sizing: border-box; /* Border and padding included in width/height */
         }
         #pathCanvas {
             position: absolute;
@@ -224,18 +221,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: var(--tile-font-size); /* JS会设置这个变量 */
+            font-size: var(--tile-font-size); /* JS will set this variable */
             cursor: pointer;
             transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
                         background-color 0.15s ease,
                         box-shadow 0.2s ease;
             box-shadow: 0 2px 3px rgba(0,0,0,0.08);
-            width: 100%; /* 确保填满grid单元格 */
+            width: 100%; /* Ensure it fills the grid cell */
             height: 100%;
             box-sizing: border-box;
-            overflow: hidden; /* 防止表情符号溢出小图块 */
-            text-align: center; /* 表情符号居中 */
-            line-height: 1; /* 确保表情符号垂直居中 */
+            overflow: hidden; /* Prevent emojis from overflowing small tiles */
+            text-align: center; /* Center emojis */
+            line-height: 1; /* Ensure emojis are vertically centered */
         }
         .tile:not(.selected):not(.empty):not(.cleared):hover {
             background-color: var(--cute-pink);
@@ -412,11 +409,23 @@
         }
 
 
-        @media (min-width: 640px) { /* 平板等稍大屏幕 */
-            .game-container { padding: 20px; } /* 调整内边距 */
+        @media (min-width: 640px) { /* For tablets and slightly larger screens */
+            .game-container { padding: 20px; } /* Adjust padding */
             .game-title { font-size: 2.0rem; margin-bottom: 18px;}
-            .info-panel { flex-direction: row; gap: 16px; font-size: 1.1rem; max-width: 450px;}
-            .info-panel span { width: auto; }
+            /* MODIFIED .info-panel for larger screens */
+            .info-panel {
+                gap: 12px; /* Larger gap */
+                font-size: 0.9rem; /* Slightly larger font */
+                max-width: 450px;
+                justify-content: space-around; /* Center items more */
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .info-panel span {
+                padding: 6px 10px;
+                min-width: 85px;
+                flex-basis: auto; /* More natural width if space allows */
+            }
             .controls { gap: 15px; max-width: none; flex-wrap: nowrap;}
             .controls .btn { flex-basis: auto; }
             .btn.icon-btn { width: 50px; height: 50px; }
@@ -437,8 +446,8 @@
             }
             .modal-buttons .btn { width: auto; }
         }
-         @media (min-width: 768px) { /* 更大屏幕 */
-             .game-container { padding: 28px; max-width: 700px; } /* 调整内边距 */
+         @media (min-width: 768px) { /* For larger screens */
+             .game-container { padding: 28px; max-width: 700px; } /* Adjust padding */
              #levelListContainer { max-width: 700px; }
         }
     </style>
@@ -449,14 +458,10 @@
 
     <div class="game-wrapper"> <div class="game-container"> <h1 class="game-title" id="levelTitle">加油！连起来！</h1>
             <div class="info-panel">
-                <div class="info-row">
-                    <span id="timer">时间: 00:00</span>
-                    <span id="score">得分: 0</span>
-                </div>
-                <div class="info-row">
-                    <span id="hints">提示: 3</span>
-                    <span id="errorsDisplay">错误: 0/0</span>
-                </div>
+                <span id="timer">时间: 00:00</span>
+                <span id="score">得分: 0</span>
+                <span id="hints">提示: 3</span>
+                <span id="errorsDisplay">错误: 0/0</span>
             </div>
 
             <div class="board-area"> <div id="gameBoard" class="game-board">
@@ -513,7 +518,7 @@
         const EMOJI_SETS = {
             faces: ['😀', '😂', '😊', '😍', '🤔', '😎', '👻', '👽', '👾', '🤖', '🎃', '🤡', '🥳', '🥺', '🤩', '😱', '😴', '🥴', '🤧', '🤠'],
             fruits: ['🍓', '🍉', '🍎', '🍊', '🍇', '🍍', '🥝', '🥭', '🍑', '🍒', '🍌', '🥥', '🥑', '🍈', '🫐', '🍐', '🍋', '🌶️', '🌽', '🥕'],
-            animals: ['🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐙', '🐵', '🦄', '🐔', '🐧', '🦉', '🦋', '🐌', '🐞', '🐢', '🐬'],
+            animals: ['🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐙', '🐵', '🦄', '�', '🐧', '🦉', '🦋', '🐌', '🐞', '🐢', '🐬'],
             objects: ['⚽', '🏀', '🏈', '🎱', '🎁', '🎈', '🎉', '🎄', '💡', '💻', '📱', '⏰', '💎', '🔔', '🔑', '👑', '☂️', '🎨', '📚', '✏️'],
             sweets: ['🍰', '🧁', '🍩', '🍪', '🍬', '🍭', '🍫', '🍦', '🍧', '🍮', '🍯', '🥧', '🥨', '🧇', '🍡', '🥮', '🥠', '🍥', '🧋', '🥤'],
             vehicles: ['🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🛵', '🚲', '✈️', '🚀', '🛸', '🚁', '⛵️'],
@@ -550,9 +555,9 @@
         let currentLevelIndex = 0;
         let maxUnlockedLevel = 1;
 
-        // Game Parameters (会被 updateGameParametersAndStyles 动态修改)
+        // Game Parameters (will be dynamically modified by updateGameParametersAndStyles)
         let gameParams = {
-            tileWidth: 48, tileHeight: 48, gap: 5, boardPadding: 10, fontSize: 26, // 初始值，会被覆盖
+            tileWidth: 48, tileHeight: 48, gap: 5, boardPadding: 10, fontSize: 26, // Initial values, will be overridden
             boardRowsLogical: levels[0].boardRows,
             boardColsLogical: levels[0].boardCols,
             boardRowsPhysical: levels[0].boardRows + 2,
@@ -729,54 +734,57 @@
             const gameContainerElement = gameWrapper.querySelector('.game-container');
 
             let effectiveBoardContainerWidth;
-            // 确保 gameContainerElement 存在并且已渲染 (offsetWidth > 0)
+            // Ensure gameContainerElement exists and is rendered (offsetWidth > 0)
             if (gameWrapper.style.display !== 'none' && gameContainerElement && gameContainerElement.offsetWidth > 0) {
-                effectiveBoardContainerWidth = gameContainerElement.clientWidth; // clientWidth 是 padding 内部的宽度
+                effectiveBoardContainerWidth = gameContainerElement.clientWidth; // clientWidth is the width inside padding
             } else {
-                // Fallback: 如果游戏容器还不可见或未渲染，基于视口估算
+                // Fallback: If game container is not yet visible or rendered, estimate based on viewport
                 // .game-container CSS width is 95vw
                 // .game-container CSS padding is 15px (mobile) or 28px (larger)
-                const typicalGameContainerPadding = (iw < 768 ? 15 : (iw < 1024 ? 20 : 28)); // 估算的 padding
+                const typicalGameContainerPadding = (iw < 768 ? 15 : (iw < 1024 ? 20 : 28)); // Estimated padding
                 effectiveBoardContainerWidth = iw * 0.95 - (2 * typicalGameContainerPadding);
             }
 
             const currentBoardColsLogical = gameParams.boardColsLogical;
-            let currentGap, currentBoardPaddingForBoardItself; // currentBoardPaddingForBoardItself 是 gameBoard 元素自身的 padding
+            let currentGap, currentBoardPaddingForBoardItself; // currentBoardPaddingForBoardItself is the padding of the gameBoard element itself
 
-            if (iw < 480) { // 小型移动设备
+            if (iw < 480) { // Small mobile devices
                 currentGap = 2;
-                currentBoardPaddingForBoardItself = 3; // 棋盘自身的内边距可以小一些
-            } else if (iw < 768) { // 中型设备 (平板)
+                currentBoardPaddingForBoardItself = 3; // Board's own padding can be smaller
+            } else if (iw < 768) { // Medium devices (tablets)
                 currentGap = 3;
                 currentBoardPaddingForBoardItself = 5;
-            } else { // 大型设备
+            } else { // Large devices
                 currentGap = 4;
                 currentBoardPaddingForBoardItself = 6;
             }
             gameParams.gap = currentGap;
-            // gameParams.boardPadding 将在 renderBoard 中用于设置 gameBoardElement 的内联样式 padding
-
+            
             const boardBorderThickness = 2; // .game-board CSS border: 2px
-            // 棋盘内容区域可用的总宽度 (减去 gameBoardElement 的边框)
+            // Total width available for board content (subtracting gameBoardElement's border)
             const spaceForBoardContentAndItsPadding = effectiveBoardContainerWidth - (2 * boardBorderThickness);
-            // 图块和间隙可用的宽度 (再减去 gameBoardElement 自身的内边距)
+            // Width available for tiles and gaps (subtracting gameBoardElement's own padding)
             const spaceForTilesAndGaps = spaceForBoardContentAndItsPadding - (2 * currentBoardPaddingForBoardItself);
 
             let calculatedTileWidth = (spaceForTilesAndGaps - (currentBoardColsLogical - 1) * currentGap) / currentBoardColsLogical;
 
-            // 优先确保棋盘能装下，即使图块变得很小
-            gameParams.tileWidth = Math.max(16, Math.floor(calculatedTileWidth)); // 保证最小16px，避免图块过小无法辨识
-
+            // Prioritize fitting the board, even if tiles become very small
+            gameParams.tileWidth = Math.max(16, Math.floor(calculatedTileWidth)); // Ensure minimum 16px to avoid tiles being too small to recognize
             gameParams.tileHeight = gameParams.tileWidth;
-            // 字体大小也相应调整，保证最小9px
-            gameParams.fontSize = Math.max(9, Math.floor(gameParams.tileWidth * 0.55)); // 0.55 比例可调整
+
+            // MODIFICATION for icon size on specific levels/mobile
+            let fontSizeScalingFactor = 0.55;
+            if (typeof currentLevelIndex !== 'undefined' && currentLevelIndex >= 4 && currentLevelIndex <= 9 && iw < 768) { // Levels 5-10 (0-indexed 4-9) and mobile screen (e.g., iw < 768px)
+                fontSizeScalingFactor = 0.62; // Increased from 0.55 to make icons slightly larger relative to tile
+            }
+            // Font size also adjusts accordingly, ensuring a minimum of 9px
+            gameParams.fontSize = Math.max(9, Math.floor(gameParams.tileWidth * fontSizeScalingFactor)); // 0.55 ratio can be adjusted
             document.documentElement.style.setProperty('--tile-font-size', gameParams.fontSize + 'px');
 
-            gameParams.boardPadding = currentBoardPaddingForBoardItself; // 更新 gameParams 中的 boardPadding
-
+            gameParams.boardPadding = currentBoardPaddingForBoardItself; // Update boardPadding in gameParams
             gameParams.boardRowsPhysical = gameParams.boardRowsLogical + 2;
             gameParams.boardColsPhysical = gameParams.boardColsLogical + 2;
-            // console.log(`Updated Params: TileW=${gameParams.tileWidth}, FontS=${gameParams.fontSize}, Gap=${gameParams.gap}, BoardPad=${gameParams.boardPadding}, EffWidth=${effectiveBoardContainerWidth}, CalcTileW=${calculatedTileWidth}`);
+            // console.log(`Updated Params: TileW=${gameParams.tileWidth}, FontS=${gameParams.fontSize}, Factor=${fontSizeScalingFactor}, Gap=${gameParams.gap}, BoardPad=${gameParams.boardPadding}, EffWidth=${effectiveBoardContainerWidth}, CalcTileW=${calculatedTileWidth}`);
         }
 
 
@@ -822,7 +830,7 @@
 
         // --- Canvas and Path Drawing ---
         function setupCanvas() {
-            // 棋盘的总宽度和高度，基于JS计算的图块尺寸、间隙和棋盘内边距
+            // Total width and height of the board, based on JS calculated tile sizes, gaps, and board padding
             const boardElementWidth = gameParams.boardColsLogical * gameParams.tileWidth +
                                    (gameParams.boardColsLogical - 1) * gameParams.gap +
                                    2 * gameParams.boardPadding;
@@ -833,8 +841,8 @@
             pathCanvas.width = boardElementWidth;
             pathCanvas.height = boardElementHeight;
 
-            // 定位 Canvas使其与 gameBoardElement 精确重叠
-            // gameBoardElement 此时应该已经渲染并有正确的尺寸
+            // Position the Canvas to precisely overlap gameBoardElement
+            // gameBoardElement should be rendered and have correct dimensions at this point
             pathCanvas.style.top = gameBoardElement.offsetTop + 'px';
             pathCanvas.style.left = gameBoardElement.offsetLeft + 'px';
 
@@ -843,21 +851,21 @@
         function clearPathCanvas() { pathCtx.clearRect(0, 0, pathCanvas.width, pathCanvas.height); }
         function getTileCenter(r_array_idx, c_array_idx) { // r_array_idx, c_array_idx are 0-based for the physical board
             let x, y;
-            // 调整坐标计算以匹配物理棋盘边界和逻辑棋盘内部图块
-            // 外部路径点 (0 或 physicalMax - 1)
-            if (c_array_idx === 0) { // 左边界外侧
+            // Adjust coordinate calculation to match physical board boundaries and logical board internal tiles
+            // External path points (0 or physicalMax - 1)
+            if (c_array_idx === 0) { // Outside left boundary
                 x = gameParams.boardPadding / 2 - gameParams.gap / 2;
-            } else if (c_array_idx === gameParams.boardColsPhysical - 1) { // 右边界外侧
+            } else if (c_array_idx === gameParams.boardColsPhysical - 1) { // Outside right boundary
                 x = gameParams.boardPadding + gameParams.boardColsLogical * gameParams.tileWidth + (gameParams.boardColsLogical -1) * gameParams.gap + gameParams.gap/2 + gameParams.boardPadding/2;
-            } else { // 逻辑棋盘内部的列 (c_array_idx is 1 to boardColsLogical)
+            } else { // Columns inside the logical board (c_array_idx is 1 to boardColsLogical)
                 x = gameParams.boardPadding + (c_array_idx - 1) * (gameParams.tileWidth + gameParams.gap) + gameParams.tileWidth / 2;
             }
 
-            if (r_array_idx === 0) { // 上边界外侧
+            if (r_array_idx === 0) { // Outside top boundary
                 y = gameParams.boardPadding / 2 - gameParams.gap / 2;
-            } else if (r_array_idx === gameParams.boardRowsPhysical - 1) { // 下边界外侧
+            } else if (r_array_idx === gameParams.boardRowsPhysical - 1) { // Outside bottom boundary
                 y = gameParams.boardPadding + gameParams.boardRowsLogical * gameParams.tileHeight + (gameParams.boardRowsLogical -1) * gameParams.gap + gameParams.gap/2 + gameParams.boardPadding/2;
-            } else { // 逻辑棋盘内部的行 (r_array_idx is 1 to boardRowsLogical)
+            } else { // Rows inside the logical board (r_array_idx is 1 to boardRowsLogical)
                 y = gameParams.boardPadding + (r_array_idx - 1) * (gameParams.tileHeight + gameParams.gap) + gameParams.tileHeight / 2;
             }
             return { x, y };
@@ -867,7 +875,7 @@
             clearPathCanvas();
             pathCtx.beginPath();
             pathCtx.strokeStyle = color;
-            pathCtx.lineWidth = Math.max(3, gameParams.tileWidth / 12); // 线条粗细也响应式
+            pathCtx.lineWidth = Math.max(3, gameParams.tileWidth / 12); // Line thickness also responsive
             pathCtx.lineCap = 'round'; pathCtx.lineJoin = 'round';
             const firstPointCoords = getTileCenter(pathPoints[0].r, pathPoints[0].c);
             pathCtx.moveTo(firstPointCoords.x, firstPointCoords.y);
@@ -1023,24 +1031,24 @@
         }
         function renderBoard(){
             gameBoardElement.innerHTML='';
-            // 设置棋盘的grid布局，基于JS计算的图块尺寸和间隙
+            // Set the grid layout for the board, based on JS calculated tile sizes and gaps
             gameBoardElement.style.gridTemplateColumns=`repeat(${gameParams.boardColsLogical}, ${gameParams.tileWidth}px)`;
             gameBoardElement.style.gridTemplateRows=`repeat(${gameParams.boardRowsLogical}, ${gameParams.tileHeight}px)`;
             gameBoardElement.style.gap=`${gameParams.gap}px`;
-            gameBoardElement.style.padding=`${gameParams.boardPadding}px`; // 棋盘自身的内边距
-            gameBoardElement.style.pointerEvents='auto'; // 确保棋盘可交互
+            gameBoardElement.style.padding=`${gameParams.boardPadding}px`; // Board's own padding
+            gameBoardElement.style.pointerEvents='auto'; // Ensure board is interactive
 
-            // 在渲染棋盘后，且棋盘尺寸已确定时，设置路径画布
-            // 使用 setTimeout 确保DOM更新完成
+            // Set up the path canvas after rendering the board and its dimensions are determined
+            // Use setTimeout to ensure DOM updates are complete
             setTimeout(() => {
                 setupCanvas();
             }, 0);
 
-            for(let r_arr = 1; r_arr <= gameParams.boardRowsLogical; r_arr++) { // 数组索引对应逻辑棋盘，1-based
+            for(let r_arr = 1; r_arr <= gameParams.boardRowsLogical; r_arr++) { // Array index corresponds to logical board, 1-based
                 for(let c_arr = 1; c_arr <= gameParams.boardColsLogical; c_arr++) {
                     const tileDiv=document.createElement('div');
-                    tileDiv.dataset.row = r_arr; // 存储其在物理数组中的行 (1 to boardRowsLogical)
-                    tileDiv.dataset.col = c_arr; // 存储其在物理数组中的列 (1 to boardColsLogical)
+                    tileDiv.dataset.row = r_arr; // Store its row in the physical array (1 to boardRowsLogical)
+                    tileDiv.dataset.col = c_arr; // Store its column in the physical array (1 to boardColsLogical)
                     const icon=gameBoardArray[r_arr][c_arr];
                     if(icon){tileDiv.classList.add('tile');tileDiv.textContent=icon;tileDiv.addEventListener('click',handleTileClick)}
                     else {tileDiv.classList.add('tile','empty');} // Should not happen for logical board tiles
@@ -1095,21 +1103,21 @@
         let resizeTimeout;
         function handleWindowResize(){clearTimeout(resizeTimeout);resizeTimeout=setTimeout(async()=>{
             // console.log("Window resized.");
-            // 总是先更新参数，因为无论在哪个界面，参数都可能需要调整
+            // Always update parameters first, as they might need adjustment regardless of the current screen
             updateGameParametersAndStyles();
             if(gameActive && gameWrapper.style.display !== 'none') {
-                // 如果游戏正在进行，重新初始化当前关卡以适应新尺寸
-                // 这会重置计时器和得分，但能保证布局正确
+                // If the game is active, reinitialize the current level to adapt to the new size
+                // This will reset the timer and score, but ensure correct layout
                 await initGame(currentLevelIndex);
             } else if (mainMenuContainer.style.display !== 'none' && !gameActive) {
-                // 如果在主菜单或关卡选择界面
-                if (mainMenuContainer.querySelector('#levelListContainer')) { // 判断是否在关卡选择界面
-                    showLevelSelectScreen(); // 重新渲染关卡选择界面
+                // If on the main menu or level select screen
+                if (mainMenuContainer.querySelector('#levelListContainer')) { // Check if on level select screen
+                    showLevelSelectScreen(); // Re-render level select screen
                 } else {
-                    showMainMenuScreen(); // 重新渲染主菜单
+                    showMainMenuScreen(); // Re-render main menu
                 }
             }
-            // 如果游戏结束模态框显示，它会保持原样，但背景游戏区域会调整
+            // If the game end modal is shown, it will remain as is, but the background game area will adjust
         },250)}
 
         function showMainMenuScreen() {
@@ -1168,7 +1176,7 @@
         async function initGame(levelIdx) {
             currentLevelIndex = levelIdx;
             const currentLevel = levels[currentLevelIndex];
-            // 更新 gameParams 的关卡特定部分
+            // Update level-specific parts of gameParams
             gameParams.boardRowsLogical = currentLevel.boardRows;
             gameParams.boardColsLogical = currentLevel.boardCols;
             gameParams.timeLimit = currentLevel.timeLimit;
@@ -1176,19 +1184,18 @@
             gameParams.totalLogicalTiles = currentLevel.boardRows * currentLevel.boardCols;
             gameParams.currentIconSet = currentLevel.theme.iconSet;
             gameParams.maxErrorsAllowed = currentLevel.maxErrors;
-            // 物理维度在 updateGameParametersAndStyles 中也会用到，这里也设置
+            // Physical dimensions are also used in updateGameParametersAndStyles, set them here too
             gameParams.boardRowsPhysical = currentLevel.boardRows + 2;
             gameParams.boardColsPhysical = currentLevel.boardCols + 2;
 
             document.body.style.background = currentLevel.theme.backgroundColor;
             levelTitleElement.textContent = `第 ${currentLevel.levelNumber} 关: ${currentLevel.levelName}`;
 
-            // OPTIMIZATION 1: 移除 levelSelectButton 的 textContent 设置，让SVG图标显示
-            // levelSelectButton.textContent = "关卡选择"; // <--- 这行被移除或注释掉
-            levelSelectButton.style.backgroundColor = "var(--cute-purple)"; // 确保样式一致
+            // OPTIMIZATION 1: Ensure levelSelectButton is correctly set up
+            levelSelectButton.style.backgroundColor = "var(--cute-purple)"; // Ensure style consistency
             levelSelectButton.style.color = "var(--text-dark)";
-            levelSelectButton.style.display = 'flex'; // 确保按钮可见
-            levelSelectButton.onclick = async () => { // 确保点击事件绑定
+            levelSelectButton.style.display = 'flex'; // Ensure button is visible
+            levelSelectButton.onclick = async () => { // Ensure click event is bound
                 const audioCanPlay = await ensureAudioStarted();
                 if(audioCanPlay) playSound('buttonClick');
                 gameActive = false;
@@ -1197,12 +1204,12 @@
                 showLevelSelectScreen();
             };
 
-            if (controls) { // 移除可能存在的 "下一关" 按钮 (如果之前有关卡完成)
+            if (controls) { // Remove any existing "Next Level" button (if a level was completed previously)
                 const existingNextLevelButton = controls.querySelector('.next-level-btn');
                 if (existingNextLevelButton) { existingNextLevelButton.remove(); }
             }
 
-            updateGameParametersAndStyles(); // 在这里调用，确保所有参数基于当前关卡和屏幕尺寸更新
+            updateGameParametersAndStyles(); // Call here to ensure all parameters are updated based on current level and screen size
 
             // console.log("Initializing Level " + currentLevel.levelNumber + " with params:", JSON.stringify(gameParams));
             clearInterval(timerInterval);
@@ -1222,12 +1229,12 @@
                     if (tileIdx < tilesList.length) gameBoardArray[r][c] = tilesList[tileIdx++];
                 }
             }
-            renderBoard(); // renderBoard 内部会调用 setupCanvas
+            renderBoard(); // renderBoard internally calls setupCanvas
             score = 0; scoreDisplay.textContent = `得分: ${score}`;
             await ensureAudioStarted();
             playBGM(currentLevel.theme.name);
             startTimer();
-            await new Promise(resolve => setTimeout(resolve, 100)); // 短暂延迟确保渲染完成
+            await new Promise(resolve => setTimeout(resolve, 100)); // Short delay to ensure rendering is complete
             await checkAndHandleNoMoreMoves();
             gameActive = true;
         }
@@ -1240,14 +1247,14 @@
         });
         shuffleButton.addEventListener('click', () => shuffleBoard(false));
         hintButton.addEventListener('click', provideHint);
-        // levelSelectButton 的点击事件已在 initGame 中设置
-
+        // levelSelectButton's click event is set in initGame
+        
         document.body.addEventListener('click', ensureAudioStarted, { once: true });
         window.addEventListener('resize', handleWindowResize);
 
         window.onload = () => {
             loadProgress();
-            updateGameParametersAndStyles(); // 初始加载时也更新一次参数，主要为了关卡选择界面的布局
+            updateGameParametersAndStyles(); // Also update parameters on initial load, mainly for level select screen layout
             mainMenuContainer.style.display = 'flex';
             gameWrapper.style.display = 'none';
             showMainMenuScreen();
