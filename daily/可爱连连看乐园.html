@@ -518,9 +518,9 @@
         const EMOJI_SETS = {
             faces: ['😀', '😂', '😊', '😍', '🤔', '😎', '👻', '👽', '👾', '🤖', '🎃', '🤡', '🥳', '🥺', '🤩', '😱', '😴', '🥴', '🤧', '🤠'],
             fruits: ['🍓', '🍉', '🍎', '🍊', '🍇', '🍍', '🥝', '🥭', '🍑', '🍒', '🍌', '🥥', '🥑', '🍈', '🫐', '🍐', '🍋', '🌶️', '🌽', '🥕'],
-            animals: ['🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐙', '🐵', '🦄', '�', '🐧', '🦉', '🦋', '🐌', '🐞', '🐢', '🐬'],
+            animals: ['🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐙', '🐵', '🦄', '🐔', '🐧', '🦉', '🦋', '🐌', '🐞', '🐢', '🐬'],
             objects: ['⚽', '🏀', '🏈', '🎱', '🎁', '🎈', '🎉', '🎄', '💡', '💻', '📱', '⏰', '💎', '🔔', '🔑', '👑', '☂️', '🎨', '📚', '✏️'],
-            sweets: ['🍰', '🧁', '🍩', '🍪', '🍬', '🍭', '🍫', '🍦', '🍧', '🍮', '🍯', '🥧', '🥨', '🧇', '🍡', '🥮', '🥠', '🍥', '🧋', '🥤'],
+            sweets: ['�', '🧁', '🍩', '🍪', '🍬', '🍭', '🍫', '🍦', '🍧', '🍮', '🍯', '🥧', '🥨', '🧇', '🍡', '🥮', '🥠', '🍥', '🧋', '🥤'],
             vehicles: ['🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🛵', '🚲', '✈️', '🚀', '🛸', '🚁', '⛵️'],
             music: ['🎸', '🎺', '🎷', '🎻', '🎹', '🥁', '🎤', '🎧', '🎼', '🎵', '🎶', '🪕', '🪗', '🪘', '🎻', '🎺', '🥁', '🎷', '🎹', '🎤'],
             weather: ['☀️', '🌙', '⭐', '☁️', '⛅', '⛈️', '🌤️', '🌥️', '🌦️', '🌧️', '🌨️', '🌩️', '🌪️', '🌫️', '🌬️', '🌈', '❄️', '☃️', '⛄', '🌡️'],
@@ -530,26 +530,27 @@
 
 
         // --- Level Definitions ---
+        // MODIFICATION: Swapped boardRows and boardCols for each level
         const levels = [
-            { levelNumber: 1, levelName: "新手上路", timeLimit: 120, boardRows: 6, boardCols: 8, tileTypesCount: 8, maxErrors: 10, starsEarned: 0,
+            { levelNumber: 1, levelName: "新手上路", timeLimit: 120, boardRows: 8, boardCols: 6, tileTypesCount: 8, maxErrors: 10, starsEarned: 0,
               theme: { name: "入门", backgroundColor: 'linear-gradient(135deg, #FFB6C1 0%, #89CFF0 100%)', iconSet: EMOJI_SETS.faces, bgmTheme: "入门" } },
-            { levelNumber: 2, levelName: "水果乐园", timeLimit: 150, boardRows: 8, boardCols: 10, tileTypesCount: 10, maxErrors: 8, starsEarned: 0,
+            { levelNumber: 2, levelName: "水果乐园", timeLimit: 150, boardRows: 10, boardCols: 8, tileTypesCount: 10, maxErrors: 8, starsEarned: 0,
               theme: { name: "水果", backgroundColor: 'linear-gradient(135deg, #A8E063 0%, #56AB2F 100%)', iconSet: EMOJI_SETS.fruits, bgmTheme: "水果" } },
-            { levelNumber: 3, levelName: "动物总动员", timeLimit: 180, boardRows: 8, boardCols: 12, tileTypesCount: 12, maxErrors: 7, starsEarned: 0,
+            { levelNumber: 3, levelName: "动物总动员", timeLimit: 180, boardRows: 12, boardCols: 8, tileTypesCount: 12, maxErrors: 7, starsEarned: 0,
               theme: { name: "动物", backgroundColor: 'linear-gradient(135deg, #F3A183 0%, #EC6F66 100%)', iconSet: EMOJI_SETS.animals, bgmTheme: "动物" } },
-            { levelNumber: 4, levelName: "物品大挑战", timeLimit: 200, boardRows: 10, boardCols: 12, tileTypesCount: 15, maxErrors: 6, starsEarned: 0,
+            { levelNumber: 4, levelName: "物品大挑战", timeLimit: 200, boardRows: 12, boardCols: 10, tileTypesCount: 15, maxErrors: 6, starsEarned: 0,
               theme: { name: "物品", backgroundColor: 'linear-gradient(135deg, #74EBD5 0%, #9FACE6 100%)', iconSet: EMOJI_SETS.objects, bgmTheme: "物品" } },
-            { levelNumber: 5, levelName: "甜点时光", timeLimit: 210, boardRows: 10, boardCols: 14, tileTypesCount: 16, maxErrors: 5, starsEarned: 0,
+            { levelNumber: 5, levelName: "甜点时光", timeLimit: 210, boardRows: 14, boardCols: 10, tileTypesCount: 16, maxErrors: 5, starsEarned: 0,
               theme: { name: "甜点", backgroundColor: 'linear-gradient(135deg, #FFC0CB 0%, #FFDAB9 100%)', iconSet: EMOJI_SETS.sweets, bgmTheme: "甜点" } },
-            { levelNumber: 6, levelName: "交通枢纽", timeLimit: 220, boardRows: 10, boardCols: 14, tileTypesCount: 18, maxErrors: 5, starsEarned: 0,
+            { levelNumber: 6, levelName: "交通枢纽", timeLimit: 220, boardRows: 14, boardCols: 10, tileTypesCount: 18, maxErrors: 5, starsEarned: 0,
               theme: { name: "交通", backgroundColor: 'linear-gradient(135deg, #A0A0A0 0%, #505050 100%)', iconSet: EMOJI_SETS.vehicles, bgmTheme: "交通" } },
-            { levelNumber: 7, levelName: "音乐盛会", timeLimit: 230, boardRows: 12, boardCols: 14, tileTypesCount: 18, maxErrors: 4, starsEarned: 0,
+            { levelNumber: 7, levelName: "音乐盛会", timeLimit: 230, boardRows: 14, boardCols: 12, tileTypesCount: 18, maxErrors: 4, starsEarned: 0,
               theme: { name: "音乐", backgroundColor: 'linear-gradient(135deg, #D2B4DE 0%, #A569BD 100%)', iconSet: EMOJI_SETS.music, bgmTheme: "音乐" } },
-            { levelNumber: 8, levelName: "天气播报", timeLimit: 240, boardRows: 12, boardCols: 16, tileTypesCount: 20, maxErrors: 4, starsEarned: 0,
+            { levelNumber: 8, levelName: "天气播报", timeLimit: 240, boardRows: 16, boardCols: 12, tileTypesCount: 20, maxErrors: 4, starsEarned: 0,
               theme: { name: "天气", backgroundColor: 'linear-gradient(135deg, #87CEEB 0%, #4682B4 100%)', iconSet: EMOJI_SETS.weather, bgmTheme: "天气" } },
-            { levelNumber: 9, levelName: "运动健将", timeLimit: 250, boardRows: 12, boardCols: 16, tileTypesCount: 20, maxErrors: 3, starsEarned: 0,
+            { levelNumber: 9, levelName: "运动健将", timeLimit: 250, boardRows: 16, boardCols: 12, tileTypesCount: 20, maxErrors: 3, starsEarned: 0,
               theme: { name: "运动", backgroundColor: 'linear-gradient(135deg, #FF8C00 0%, #FF4500 100%)', iconSet: EMOJI_SETS.sports, bgmTheme: "运动" } },
-            { levelNumber: 10, levelName: "终极混搭", timeLimit: 280, boardRows: 12, boardCols: 18, tileTypesCount: 22, maxErrors: 3, starsEarned: 0,
+            { levelNumber: 10, levelName: "终极混搭", timeLimit: 280, boardRows: 18, boardCols: 12, tileTypesCount: 22, maxErrors: 3, starsEarned: 0,
               theme: { name: "大师", backgroundColor: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', iconSet: ALL_ICONS_COMBINED, bgmTheme: "大师" } }
         ];
         let currentLevelIndex = 0;
@@ -1262,3 +1263,4 @@
     </script>
 </body>
 </html>
+�
