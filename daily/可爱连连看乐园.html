@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可爱连连看乐园</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script> 
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --tile-font-size: 26px;
+            --cute-blue: #89CFF0; 
+            --cute-pink: #FFB6C1; 
+            --cute-green: #90EE90; 
+            --cute-yellow: #FFFACD; 
+            --cute-purple: #E6E6FA; 
+            --text-dark: #4A5568; 
+            --text-medium: #718096; 
+            --locked-color: #CBD5E0; 
+            --star-filled-color: #FFD700; 
+            --star-empty-color: #E2E8F0;  
+            --button-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --button-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            font-family: 'Nunito', sans-serif; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: background 0.5s ease-in-out; 
+            overflow-x: hidden; 
+            background: linear-gradient(135deg, var(--cute-pink) 0%, var(--cute-blue) 100%); 
+        }
+        #mainMenuContainer { 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            min-height: 80vh; 
+        }
+        .main-title {
+            font-size: 3.5rem; 
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.25);
+            margin-bottom: 40px;
+            font-weight: 900; 
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        #initialStartGameButton {
+            padding: 20px 45px;
+            font-size: 1.8rem; 
+            font-weight: 800;
+            color: var(--text-dark);
+            background-color: var(--cute-green);
+            border: none;
+            border-radius: 50px; 
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
+            box-shadow: var(--button-shadow);
+        }
+        #initialStartGameButton:hover {
+            transform: scale(1.08) rotate(-2deg); 
+            box-shadow: var(--button-hover-shadow);
+            background-color: #A9F5A9; 
+        }
+
+        .level-select-title {
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 25px;
+            font-weight: 800;
+        }
+        #levelListContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 15px; 
+            width: 100%;
+            max-width: 700px; 
+        }
+        .level-button {
+            padding: 12px 15px;
+            font-size: 1rem; 
+            font-weight: 700;
+            color: var(--text-dark);
+            background-color: var(--cute-yellow);
+            border: 2px solid rgba(255,255,255,0.5); 
+            border-radius: 18px; 
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            box-shadow: var(--button-shadow);
+            text-align: center;
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .level-button:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: var(--button-hover-shadow);
+            background-color: #fff7d6; 
+        }
+        .level-button:disabled {
+            background-color: var(--locked-color);
+            color: #e2e8f0;
+            cursor: not-allowed;
+            opacity: 0.7;
+            border-color: rgba(0,0,0,0.1);
+        }
+         .level-button .level-name {
+            font-size:0.8em; 
+            color: var(--text-medium);
+            margin-top: 4px;
+        }
+        .level-button .stars-display {
+            font-size: 1.1em; 
+            margin-top: 6px;
+            line-height: 1;
+        }
+        .level-button .stars-display .star-filled { color: var(--star-filled-color); }
+        .level-button .stars-display .star-empty { color: var(--star-empty-color); }
+         .level-button .lock-icon {
+            margin-left: 8px;
+            font-size: 0.9em;
+        }
+
+        .game-wrapper { 
+            display: none; 
+            flex-direction: column;
+            align-items: center;
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px; 
+            background-color: rgba(255, 255, 255, 0.92); 
+            backdrop-filter: blur(8px);
+            border-radius: 24px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            width: 90vw; 
+            max-width: 650px; 
+            border: 1px solid rgba(255,255,255,0.25);
+            margin: 20px 0; 
+        }
+        .game-title { 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            margin-bottom: 15px; 
+            color: var(--text-dark);
+            text-align: center;
+        }
+        .info-panel {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            gap: 8px; 
+            width: 100%;
+            max-width: 260px; 
+            margin-bottom: 15px;
+            font-size: 1rem; 
+            color: var(--text-medium);
+            font-weight: 600; 
+        }
+        .info-panel span {
+            padding: 6px 10px; 
+            background-color: var(--cute-yellow); 
+            border-radius: 10px; 
+            text-align: center;
+            width: fit-content; 
+            color: var(--text-dark);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+         #errorsDisplay { 
+            color: #ef4444; 
+        }
+
+        .board-area { 
+            position: relative; 
+            width: 100%; 
+            display: flex; 
+            justify-content: center;
+        }
+
+        .game-board { 
+            display: grid;
+            border: 2px solid var(--cute-purple); 
+            border-radius: 16px; 
+            background-color: rgba(255, 255, 255, 0.7); 
+            position: relative; 
+            z-index: 1; 
+        }
+        #pathCanvas {
+            position: absolute;
+            pointer-events: none; 
+            z-index: 2; 
+        }
+
+        .tile {
+            background-color: var(--cute-purple); 
+            border: 1px solid rgba(0,0,0,0.05); 
+            border-radius: 10px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--tile-font-size); 
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        background-color 0.15s ease, 
+                        box-shadow 0.2s ease;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.08);
+            width: 100%; 
+            height: 100%;
+            box-sizing: border-box;
+        }
+        .tile:not(.selected):not(.empty):not(.cleared):hover {
+            background-color: var(--cute-pink);
+            transform: translateY(-2px) scale(1.05); 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .tile.selected {
+            background-color: var(--cute-green); 
+            border-color: #76D7C4; 
+            color: var(--text-dark); 
+            transform: scale(1.1); 
+            box-shadow: 0 0 12px var(--cute-green), 0 0 5px var(--cute-green); 
+        }
+        .tile.hint-highlight { 
+            background-color: #FFD700 !important; 
+            border-color: #FFC400 !important; 
+            box-shadow: 0 0 15px #FFD700, 0 0 8px #FFC400 !important;
+            transform: scale(1.12) !important; 
+        }
+        .tile.empty { 
+            background-color: transparent !important; 
+            border: none !important; 
+            box-shadow: none !important;
+            cursor: default;
+        }
+        .tile.cleared {
+            transform: scale(0.3) rotate(20deg) translateY(-20px); 
+            opacity: 0;
+            cursor: default;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease;
+        }
+        .controls {
+            margin-top: 20px; 
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 10px; 
+        }
+        .btn {
+            padding: 10px 18px; 
+            font-size: 0.9rem; 
+            font-weight: 700; 
+            color: white;
+            background-color: var(--cute-blue);
+            border: none;
+            border-radius: 25px; 
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--button-shadow);
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+        }
+        .btn svg { 
+            width: 1.1em;
+            height: 1.1em;
+            margin-right: 0.5em;
+        }
+        .btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: var(--button-hover-shadow);
+        }
+        .btn:active {
+            transform: translateY(0px) scale(0.98);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn.bg-green-500 { background-color: var(--cute-green); color: var(--text-dark); }
+        .btn.bg-green-500:hover { background-color: #A9F5A9; } 
+        .btn.bg-yellow-500 { background-color: #FFD700; color: var(--text-dark); } 
+        .btn.bg-yellow-500:hover { background-color: #FFDB58; } 
+
+        #message-box { 
+            position: fixed;
+            top: 20px; 
+            left: 50%;
+            transform: translateX(-50%) translateY(-60px);
+            color: var(--text-dark); 
+            padding: 12px 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            z-index: 1000;
+            opacity: 0;
+            font-size: 1rem; 
+            font-weight: 600;
+            transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: none;
+            text-align: center;
+        }
+        #message-box.success { background-color: var(--cute-green); }
+        #message-box.error { background-color: #FFC0CB; } 
+        #message-box.win { background-color: #FFD700; }   
+        #message-box.info { background-color: var(--cute-blue); color: white; } 
+        #message-box.gameover { background-color: #B0C4DE; } 
+        #message-box.show {
+            display: block;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5); 
+            display: none; 
+            align-items: center;
+            justify-content: center;
+            z-index: 2000; 
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 90vw;
+            width: 400px; 
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+        .modal-content h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+        .modal-content p {
+            font-size: 1.1rem;
+            color: var(--text-medium);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .modal-buttons {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-buttons .btn { 
+            min-width: 150px; 
+            width: 100%; 
+            max-width: 220px; 
+        }
+
+
+        @media (min-width: 640px) { 
+            .game-title { font-size: 2.0rem; margin-bottom: 18px;} 
+            .info-panel { flex-direction: row; gap: 16px; font-size: 1.1rem; max-width: 450px;} 
+            .info-panel span { width: auto; }
+            .controls { gap: 15px; }
+            .btn { padding: 12px 24px; font-size: 1rem; }
+            .main-title { font-size: 4rem; margin-bottom: 50px;} 
+            #initialStartGameButton { font-size: 2rem; padding: 22px 50px;}
+            .level-select-title { font-size: 2.8rem; }
+            .level-button { font-size: 1.2rem; padding: 18px 25px; }
+            #message-box { font-size: 1.2rem; padding: 20px 30px; } 
+            .modal-content { width: 450px; padding: 35px 50px;}
+            .modal-content h2 { font-size: 2.2rem; }
+            .modal-content p { font-size: 1.2rem; }
+            .modal-buttons { 
+                flex-direction: row; 
+                justify-content: center; 
+                gap: 15px;
+                flex-wrap: wrap; 
+            } 
+            .modal-buttons .btn { width: auto; } 
+        }
+         @media (min-width: 768px) { 
+             .game-container { padding: 28px; max-width: 700px; }
+             #levelListContainer { max-width: 700px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="mainMenuContainer">
+        </div>
+
+    <div class="game-wrapper"> 
+        <div class="game-container">
+            <h1 class="game-title" id="levelTitle">加油！连起来！</h1> 
+            <div class="info-panel">
+                <span id="timer">时间: 00:00</span> 
+                <span id="score">得分: 0</span>
+                <span id="hints">提示: 3</span> 
+                <span id="errorsDisplay">错误: 0/0</span> </div>
+
+            <div class="board-area">
+                <div id="gameBoard" class="game-board">
+                    </div>
+                <canvas id="pathCanvas"></canvas>
+            </div>
+
+            <div class="controls">
+                <button id="restartButton" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                    重玩本关
+                </button>
+                <button id="shuffleButton" class="btn bg-green-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                    洗牌牌
+                </button>
+                <button id="hintButton" class="btn bg-yellow-500"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.354a15.054 15.054 0 0 1-4.5 0M3.75 10.5h.008v.008H3.75V10.5Zm0 3.75h.008v.008H3.75V14.25Zm0 3.75h.008v.008H3.75V18Zm16.5-3.75h.008v.008H20.25V14.25Zm0 3.75h.008v.008H20.25V18Zm0 3.75h.008v.008H20.25V21.75Zm-3.75-11.25h.008v.008H16.5V10.5Zm0 3.75h.008v.008H16.5V14.25Zm0 3.75h.008v.008H16.5V18Z" />
+                    </svg>
+                    小提示
+                </button>
+                 <button id="levelSelectButton" class="btn" style="background-color: var(--cute-purple); color: var(--text-dark);">
+                    关卡选择
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="message-box"></div>
+    <div id="endGameModalOverlay" class="modal-overlay"></div> 
+
+    <script>
+        // DOM Elements
+        const mainMenuContainer = document.getElementById('mainMenuContainer'); 
+        const gameWrapper = document.querySelector('.game-wrapper'); 
+        const levelTitleElement = document.getElementById('levelTitle'); 
+        const gameBoardElement = document.getElementById('gameBoard');
+        const pathCanvas = document.getElementById('pathCanvas'); 
+        const pathCtx = pathCanvas.getContext('2d'); 
+        const restartButton = document.getElementById('restartButton');
+        const shuffleButton = document.getElementById('shuffleButton');
+        const hintButton = document.getElementById('hintButton');
+        const levelSelectButton = document.getElementById('levelSelectButton'); 
+        const timerDisplay = document.getElementById('timer');
+        const scoreDisplay = document.getElementById('score');
+        const hintsDisplay = document.getElementById('hints');
+        const errorsDisplay = document.getElementById('errorsDisplay'); 
+        const messageBox = document.getElementById('message-box');
+        const controls = document.querySelector('.controls'); 
+        const endGameModalOverlay = document.getElementById('endGameModalOverlay');
+
+
+        // --- Emoji Icon Sets for Themes ---
+        const EMOJI_SETS = {
+            faces: ['😀', '😂', '😊', '😍', '🤔', '😎', '👻', '👽', '👾', '🤖', '🎃', '🤡', '🥳', '🥺', '🤩', '😱', '😴', '🥴', '🤧', '🤠'], 
+            fruits: ['🍓', '🍉', '🍎', '🍊', '🍇', '🍍', '🥝', '🥭', '🍑', '🍒', '🍌', '🥥', '🥑', '🍈', '🫐', '🍐', '🍋', '🌶️', '🌽', '🥕'], 
+            animals: ['🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐙', '🐵', '🦄', '🐔', '🐧', '🦉', '🦋', '🐌', '🐞', '🐢', '🐬'], 
+            objects: ['⚽', '🏀', '🏈', '🎱', '🎁', '🎈', '🎉', '🎄', '💡', '💻', '📱', '⏰', '💎', '🔔', '🔑', '👑', '☂️', '🎨', '📚', '✏️'],
+            sweets: ['🍰', '🧁', '🍩', '🍪', '🍬', '🍭', '🍫', '🍦', '🍧', '🍮', '🍯', '🥧', '🥨', '🧇', '🍡', '🥮', '🥠', '🍥', '🧋', '🥤'],
+            vehicles: ['🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🛵', '🚲', '✈️', '🚀', '🛸', '🚁', '⛵️'],
+            music: ['🎸', '🎺', '🎷', '🎻', '🎹', '🥁', '🎤', '🎧', '🎼', '🎵', '🎶', '🪕', '🪗', '🪘', '🪇', '🪈', '🪉', '🪊', '📻', '🎙️'],
+            weather: ['☀️', '🌙', '⭐', '☁️', '⛅', '⛈️', '🌤️', '🌥️', '🌦️', '🌧️', '🌨️', '🌩️', '🌪️', '🌫️', '🌬️', '🌈', '❄️', '☃️', '⛄', '🌡️'],
+            sports: ['⚽', '🏀', '🏈', '⚾', '🥎', '🏐', '🏉', '🎱', '🥏', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🪁', '🏹', '🎣', '🥊']
+        };
+        const ALL_ICONS_COMBINED = [...new Set([...EMOJI_SETS.faces, ...EMOJI_SETS.fruits, ...EMOJI_SETS.animals, ...EMOJI_SETS.objects, ...EMOJI_SETS.sweets, ...EMOJI_SETS.vehicles, ...EMOJI_SETS.music, ...EMOJI_SETS.weather, ...EMOJI_SETS.sports])]; 
+
+
+        // --- Level Definitions ---
+        const levels = [
+            { levelNumber: 1, levelName: "新手上路", timeLimit: 120, boardRows: 6, boardCols: 8, tileTypesCount: 8, maxErrors: 10, starsEarned: 0,
+              theme: { name: "入门", backgroundColor: 'linear-gradient(135deg, #FFB6C1 0%, #89CFF0 100%)', iconSet: EMOJI_SETS.faces, bgmTheme: "入门" } },
+            { levelNumber: 2, levelName: "水果乐园", timeLimit: 150, boardRows: 8, boardCols: 10, tileTypesCount: 10, maxErrors: 8, starsEarned: 0,
+              theme: { name: "水果", backgroundColor: 'linear-gradient(135deg, #A8E063 0%, #56AB2F 100%)', iconSet: EMOJI_SETS.fruits, bgmTheme: "水果" } },
+            { levelNumber: 3, levelName: "动物总动员", timeLimit: 180, boardRows: 8, boardCols: 12, tileTypesCount: 12, maxErrors: 7, starsEarned: 0,
+              theme: { name: "动物", backgroundColor: 'linear-gradient(135deg, #F3A183 0%, #EC6F66 100%)', iconSet: EMOJI_SETS.animals, bgmTheme: "动物" } },
+            { levelNumber: 4, levelName: "物品大挑战", timeLimit: 200, boardRows: 10, boardCols: 12, tileTypesCount: 15, maxErrors: 6, starsEarned: 0,
+              theme: { name: "物品", backgroundColor: 'linear-gradient(135deg, #74EBD5 0%, #9FACE6 100%)', iconSet: EMOJI_SETS.objects, bgmTheme: "物品" } },
+            { levelNumber: 5, levelName: "甜点时光", timeLimit: 210, boardRows: 10, boardCols: 14, tileTypesCount: 16, maxErrors: 5, starsEarned: 0,
+              theme: { name: "甜点", backgroundColor: 'linear-gradient(135deg, #FFC0CB 0%, #FFDAB9 100%)', iconSet: EMOJI_SETS.sweets, bgmTheme: "甜点" } },
+            { levelNumber: 6, levelName: "交通枢纽", timeLimit: 220, boardRows: 10, boardCols: 14, tileTypesCount: 18, maxErrors: 5, starsEarned: 0,
+              theme: { name: "交通", backgroundColor: 'linear-gradient(135deg, #A0A0A0 0%, #505050 100%)', iconSet: EMOJI_SETS.vehicles, bgmTheme: "交通" } },
+            { levelNumber: 7, levelName: "音乐盛会", timeLimit: 230, boardRows: 12, boardCols: 14, tileTypesCount: 18, maxErrors: 4, starsEarned: 0,
+              theme: { name: "音乐", backgroundColor: 'linear-gradient(135deg, #D2B4DE 0%, #A569BD 100%)', iconSet: EMOJI_SETS.music, bgmTheme: "音乐" } },
+            { levelNumber: 8, levelName: "天气播报", timeLimit: 240, boardRows: 12, boardCols: 16, tileTypesCount: 20, maxErrors: 4, starsEarned: 0,
+              theme: { name: "天气", backgroundColor: 'linear-gradient(135deg, #87CEEB 0%, #4682B4 100%)', iconSet: EMOJI_SETS.weather, bgmTheme: "天气" } },
+            { levelNumber: 9, levelName: "运动健将", timeLimit: 250, boardRows: 12, boardCols: 16, tileTypesCount: 20, maxErrors: 3, starsEarned: 0,
+              theme: { name: "运动", backgroundColor: 'linear-gradient(135deg, #FF8C00 0%, #FF4500 100%)', iconSet: EMOJI_SETS.sports, bgmTheme: "运动" } },
+            { levelNumber: 10, levelName: "终极混搭", timeLimit: 280, boardRows: 12, boardCols: 18, tileTypesCount: 22, maxErrors: 3, starsEarned: 0,
+              theme: { name: "大师", backgroundColor: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', iconSet: ALL_ICONS_COMBINED, bgmTheme: "大师" } }
+        ];
+        let currentLevelIndex = 0; 
+        let maxUnlockedLevel = 1; 
+
+        // Game Parameters
+        let gameParams = {
+            tileWidth: 48, tileHeight: 48, gap: 5, boardPadding: 10, fontSize: 26,
+            boardRowsLogical: levels[0].boardRows, 
+            boardColsLogical: levels[0].boardCols,
+            boardRowsPhysical: levels[0].boardRows + 2, 
+            boardColsPhysical: levels[0].boardCols + 2,
+            timeLimit: levels[0].timeLimit,
+            tileTypesCount: levels[0].tileTypesCount,
+            totalLogicalTiles: levels[0].boardRows * levels[0].boardCols,
+            currentIconSet: levels[0].theme.iconSet,
+            maxErrorsAllowed: levels[0].maxErrors 
+        };
+        
+        const INITIAL_HINTS = 3; 
+
+        // Game State
+        let gameBoardArray = [];
+        let score = 0;
+        let timeLeft = gameParams.timeLimit;
+        let timerInterval = null;
+        let firstSelectedTile = null;
+        let remainingTiles = 0;
+        let gameActive = false;
+        let pathClearTimeout = null; 
+        let autoShuffleAttempts = 0; 
+        const MAX_AUTO_SHUFFLE_ATTEMPTS = 1; 
+        let hintCount = INITIAL_HINTS;
+        let hintHighlightTimeout = null;
+        let audioInitialized = false; 
+        let connectionErrors = 0; 
+        let currentBGMLoop = null; 
+
+
+        // --- Local Storage ---
+        const STORAGE_KEY_MAX_LEVEL = 'lianliankan_maxUnlockedLevel_v6'; 
+        const STORAGE_KEY_LEVELS_DATA = 'lianliankan_levelsData_v6';
+
+        function saveProgress() { /* ... (same as before) ... */ 
+            try {
+                localStorage.setItem(STORAGE_KEY_MAX_LEVEL, maxUnlockedLevel.toString());
+                localStorage.setItem(STORAGE_KEY_LEVELS_DATA, JSON.stringify(levels.map(l => ({ levelNumber: l.levelNumber, starsEarned: l.starsEarned })))); 
+                console.log("Progress saved:", { maxUnlockedLevel, levels });
+            } catch (e) {
+                console.error("Failed to save progress to localStorage:", e);
+            }
+        }
+        function loadProgress() { /* ... (same as before) ... */ 
+             try {
+                const savedMaxLevel = localStorage.getItem(STORAGE_KEY_MAX_LEVEL);
+                if (savedMaxLevel !== null) {
+                    maxUnlockedLevel = parseInt(savedMaxLevel, 10);
+                } else {
+                    maxUnlockedLevel = 1; 
+                }
+
+                const savedLevelsDataString = localStorage.getItem(STORAGE_KEY_LEVELS_DATA);
+                if (savedLevelsDataString) {
+                    const parsedSavedLevels = JSON.parse(savedLevelsDataString);
+                    if (Array.isArray(parsedSavedLevels)) {
+                        levels.forEach((currentLevelInCode) => {
+                            const savedLevelData = parsedSavedLevels.find(sl => sl.levelNumber === currentLevelInCode.levelNumber);
+                            if (savedLevelData && typeof savedLevelData.starsEarned !== 'undefined') {
+                                currentLevelInCode.starsEarned = savedLevelData.starsEarned;
+                            } else {
+                                currentLevelInCode.starsEarned = currentLevelInCode.starsEarned || 0; 
+                            }
+                        });
+                    }
+                } else {
+                    levels.forEach(level => level.starsEarned = level.starsEarned || 0);
+                }
+                console.log("Progress loaded:", { maxUnlockedLevel, levels });
+            } catch (e) {
+                console.error("Failed to load progress from localStorage:", e);
+                maxUnlockedLevel = 1;
+                levels.forEach(level => level.starsEarned = 0);
+            }
+        }
+
+
+        // --- Audio Setup (Tone.js) ---
+        let sounds = {}; 
+        function initializeAudio() { 
+            if (audioInitialized) return; 
+            sounds.click = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+            sounds.match1 = new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.05, release: 0.2 }, volume: -12 }).toDestination();
+            sounds.match2 = new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.05, release: 0.2 }, volume: -12 }).toDestination();
+            sounds.error = new Tone.Synth({ oscillator: { type: "square" }, envelope: { attack: 0.01, decay: 0.15, sustain: 0, release: 0.1 } }).toDestination();
+            sounds.win = new Tone.PolySynth({ polyphony: 4, voice: Tone.Synth, options: { envelope: { attack: 0.05, decay: 0.5, sustain: 0.1, release: 1 } } }).toDestination();
+            sounds.gameOver = new Tone.Synth({ oscillator: { type: "sawtooth" }, envelope: { attack: 0.1, decay: 0.8, sustain: 0, release: 0.5 } }).toDestination();
+            sounds.buttonClick = new Tone.MembraneSynth({ pitchDecay: 0.01, octaves: 2, envelope: { attack: 0.001, decay: 0.1, sustain: 0 } }).toDestination();
+            
+            sounds.bgmSynth = new Tone.Synth({ // A gentler synth for BGM
+                oscillator: { type: 'sine' }, // Sine wave is softer
+                envelope: { attack: 0.1, decay: 0.3, sustain: 0.1, release: 1 },
+                volume: -25 // Quieter BGM
+            }).toDestination();
+             // Add a filter for a softer BGM sound
+            const filter = new Tone.Filter(800, "lowpass").toDestination();
+            sounds.bgmSynth.connect(filter);
+
+
+            sounds.bgmLoops = {
+                "入门": new Tone.Loop(time => {
+                    sounds.bgmSynth.triggerAttackRelease("C4", "2n", time);
+                    sounds.bgmSynth.triggerAttackRelease("G4", "2n", time + Tone.Time("2n").toSeconds());
+                }, "1m"),
+                "水果": new Tone.Loop(time => {
+                    sounds.bgmSynth.triggerAttackRelease("D4", "4n", time);
+                    sounds.bgmSynth.triggerAttackRelease("A4", "4n", time + 0.5);
+                    sounds.bgmSynth.triggerAttackRelease("F#4", "4n", time + 1);
+                }, "2m"),
+                "动物": new Tone.Loop(time => {
+                    sounds.bgmSynth.triggerAttackRelease("E4", "2n", time);
+                    sounds.bgmSynth.triggerAttackRelease("B3", "2n", time + 1);
+                }, "2m"),
+                "物品": new Tone.Loop(time => {
+                    sounds.bgmSynth.triggerAttackRelease("F4", "1m", time);
+                }, "1m"),
+                "甜点": new Tone.Loop(time => {
+                    sounds.bgmSynth.triggerAttackRelease("G4", "4n", time);
+                    sounds.bgmSynth.triggerAttackRelease("C5", "4n", time + 0.5);
+                    sounds.bgmSynth.triggerAttackRelease("E5", "4n", time + 1);
+                }, "2m"),
+                "交通": new Tone.Loop(time => {
+                    sounds.bgmSynth.triggerAttackRelease("A3", "2n", time);
+                    sounds.bgmSynth.triggerAttackRelease("E4", "2n", time + 1);
+                }, "2m"),
+                "音乐": new Tone.Loop(time => {
+                    const notes = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"];
+                    const note = notes[Math.floor(Math.random() * notes.length)];
+                    sounds.bgmSynth.triggerAttackRelease(note, "4n", time);
+                }, "1n"),
+                "天气": new Tone.Loop(time => {
+                    sounds.bgmSynth.triggerAttackRelease("C4", "1m", time, 0.8); // Longer note with velocity
+                }, "1m"),
+                "运动": new Tone.Loop(time => {
+                    sounds.bgmSynth.triggerAttackRelease("D4", "8n", time);
+                    sounds.bgmSynth.triggerAttackRelease("G4", "8n", time + 0.25);
+                    sounds.bgmSynth.triggerAttackRelease("A4", "8n", time + 0.5);
+                }, "1n"),
+                "大师": new Tone.Loop(time => {
+                    sounds.bgmSynth.triggerAttackRelease("C4", "1n", time);
+                    sounds.bgmSynth.triggerAttackRelease("F4", "1n", time + 1);
+                    sounds.bgmSynth.triggerAttackRelease("Bb3", "1n", time + 2);
+                    sounds.bgmSynth.triggerAttackRelease("Eb4", "1n", time + 3);
+                }, "4m")
+            };
+
+            audioInitialized = true; console.log("Audio initialized with new BGM synths.");
+        }
+        async function ensureAudioStarted() { /* ... (same as before) ... */ 
+            if (typeof Tone === 'undefined' || Tone === null) { console.warn("Tone.js is not loaded or not ready. Audio will be unavailable."); return false; }
+            if (Tone.context.state !== 'running') {
+                try { await Tone.start(); console.log('Tone.js audio context started.'); } 
+                catch (e) { console.error("Error starting Tone.js context:", e); return false; }
+            }
+            if (!audioInitialized) { initializeAudio(); }
+            return true; 
+        }
+        async function playSound(soundType) { /* ... (same as before) ... */
+            const audioIsReady = await ensureAudioStarted();
+            if (!audioIsReady || !audioInitialized || typeof Tone === 'undefined' || 
+                (soundType === 'match' && (!sounds.match1 || !sounds.match2)) ||
+                (soundType !== 'match' && !sounds[soundType])
+            ) { 
+                console.warn(`Cannot play sound: ${soundType}.`); return; 
+            }
+
+            const now = Tone.now();
+            try {
+                switch(soundType) {
+                    case 'click': sounds.click.triggerAttackRelease("C5", "8n", now); break;
+                    case 'match': 
+                        sounds.match1.triggerAttackRelease("E5", "8n", now); 
+                        sounds.match2.triggerAttackRelease("G5", "8n", now + 0.15); 
+                        break; 
+                    case 'error': sounds.error.triggerAttackRelease("A2", "8n", now); break;
+                    case 'win': sounds.win.triggerAttackRelease(["C4", "E4", "G4", "C5"], "0.5n", now); sounds.win.triggerAttackRelease(["E4", "G4", "B4", "E5"], "0.5n", now + 0.4); sounds.win.triggerAttackRelease(["G4", "B4", "D5", "G5"], "0.5n", now + 0.8); break; 
+                    case 'gameOver': sounds.gameOver.triggerAttackRelease("F#3", "1n", now); break; 
+                    case 'buttonClick': sounds.buttonClick.triggerAttackRelease("C3", "16n", now); break; 
+                }
+            } catch (e) { console.error("Error playing sound:", e); }
+        }
+
+        function playBGM(themeName) {
+            if (!audioInitialized || typeof Tone === 'undefined') return;
+            stopBGM(); 
+
+            if (sounds.bgmLoops[themeName]) {
+                currentBGMLoop = sounds.bgmLoops[themeName];
+                currentBGMLoop.start(0).stop(gameParams.timeLimit + 2); 
+                Tone.Transport.start();
+                console.log(`Playing BGM for theme: ${themeName}`);
+            } else {
+                console.warn(`BGM for theme "${themeName}" not found. Playing default.`);
+                // Fallback to a default BGM if specific theme BGM is missing
+                if (sounds.bgmLoops["入门"]) { // Assuming "入门" is a safe default
+                    currentBGMLoop = sounds.bgmLoops["入门"];
+                    currentBGMLoop.start(0).stop(gameParams.timeLimit + 2);
+                    Tone.Transport.start();
+                }
+            }
+        }
+
+        function stopBGM() {
+            if (typeof Tone === 'undefined') return;
+            if (currentBGMLoop) {
+                currentBGMLoop.stop(0); 
+                console.log("BGM stopped.");
+            }
+            Tone.Transport.stop(); 
+            Tone.Transport.cancel(); 
+            currentBGMLoop = null;
+        }
+
+
+        // --- Responsive Parameter Update ---
+        function updateGameParametersAndStyles() { /* ... (same as before) ... */ 
+            const iw = window.innerWidth;
+            const gameContainerElement = gameWrapper.querySelector('.game-container');
+            const referenceElementForWidth = gameWrapper.style.display !== 'none' ? gameContainerElement : mainMenuContainer;
+            const containerWidth = referenceElementForWidth.offsetWidth * 0.9;
+            const currentBoardColsPhysical = gameParams.boardColsLogical + 2; 
+            const availableWidthForBoard = containerWidth - 2 * 10 - 2 * 2; 
+            let calculatedTileWidth = (availableWidthForBoard - (currentBoardColsPhysical - 1) * 2 - 2 * 4) / currentBoardColsPhysical;
+            if (iw < 480) { 
+                gameParams.tileWidth = Math.max(28, Math.min(32, calculatedTileWidth)); 
+                gameParams.gap = 2; gameParams.boardPadding = 5; gameParams.fontSize = 16;
+            } else if (iw < 768) { 
+                gameParams.tileWidth = Math.max(36, Math.min(40, calculatedTileWidth));
+                gameParams.gap = 4; gameParams.boardPadding = 8; gameParams.fontSize = 20;
+            } else { 
+                gameParams.tileWidth = Math.max(40, Math.min(48, calculatedTileWidth));
+                gameParams.gap = 5; gameParams.boardPadding = 10; gameParams.fontSize = 24;
+            }
+            gameParams.tileHeight = gameParams.tileWidth; 
+            document.documentElement.style.setProperty('--tile-font-size', gameParams.fontSize + 'px');
+            gameParams.boardRowsPhysical = gameParams.boardRowsLogical + 2;
+            gameParams.boardColsPhysical = gameParams.boardColsLogical + 2;
+        }
+
+        // --- Helper Functions ---
+        const CUTE_SUCCESS_MESSAGES = ["太棒啦！🎉", "真厉害！✨", "好样的！🥳", "漂亮！🌟", "完美！💖"];
+
+        function showMessage(message, type = 'success', duration = 2000) { /* ... (same as before) ... */ 
+            let displayMessage = message;
+            if (type === 'success' && message === "成功消除!") { 
+                displayMessage = CUTE_SUCCESS_MESSAGES[Math.floor(Math.random() * CUTE_SUCCESS_MESSAGES.length)];
+            }
+
+            messageBox.textContent = displayMessage; 
+            messageBox.className = 'message-box'; 
+            messageBox.classList.add(type); 
+            
+            if (messageBox.style.display === 'none') {
+                messageBox.style.display = 'block';
+                requestAnimationFrame(() => { 
+                    messageBox.classList.add('show');
+                });
+            } else {
+                 messageBox.classList.add('show'); 
+            }
+
+            const effectiveDuration = (type === 'win' || type === 'gameover' || message.includes("自动洗牌") || message.includes("提示")) ? Math.max(duration, 3000) : duration;
+            
+            if (messageBox.hideTimeout) clearTimeout(messageBox.hideTimeout);
+
+            messageBox.hideTimeout = setTimeout(() => {
+                messageBox.classList.remove('show');
+                setTimeout(() => { 
+                    if (!messageBox.classList.contains('show')) { 
+                        messageBox.style.display = 'none'; 
+                    }
+                }, 350); 
+            }, effectiveDuration);
+        }
+        function shuffleArray(array) { /* ... (same as before) ... */ for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
+        function formatTime(seconds) { /* ... (same as before) ... */ const minutes = Math.floor(seconds / 60); const rs = seconds % 60; return `${minutes < 10 ? '0' : ''}${minutes}:${rs < 10 ? '0' : ''}${rs}`; }
+        function updateHintsDisplay() { /* ... (same as before) ... */ hintsDisplay.textContent = `提示: ${hintCount}`; }
+        function updateErrorsDisplay() {
+            errorsDisplay.textContent = `错误: ${connectionErrors}/${gameParams.maxErrorsAllowed}`;
+        }
+
+
+        // --- Canvas and Path Drawing ---
+        function setupCanvas() { /* ... (same as before) ... */ 
+            const boardElementWidth = gameBoardElement.offsetWidth;
+            const boardElementHeight = gameBoardElement.offsetHeight;
+            pathCanvas.width = boardElementWidth;
+            pathCanvas.height = boardElementHeight;
+            pathCanvas.style.top = gameBoardElement.offsetTop + 'px';
+            pathCanvas.style.left = gameBoardElement.offsetLeft + 'px';
+            clearPathCanvas();
+        }
+        function clearPathCanvas() { /* ... (same as before) ... */ pathCtx.clearRect(0, 0, pathCanvas.width, pathCanvas.height); }
+        function getTileCenter(r_array_idx, c_array_idx) { /* ... (same as before) ... */ 
+            let x, y;
+            if (c_array_idx > 0 && c_array_idx <= gameParams.boardColsLogical) {
+                x = gameParams.boardPadding + (c_array_idx - 1) * (gameParams.tileWidth + gameParams.gap) + gameParams.tileWidth / 2;
+            } else if (c_array_idx === 0) { 
+                x = gameParams.boardPadding / 2 - gameParams.gap/2; 
+            } else { 
+                x = gameParams.boardPadding + gameParams.boardColsLogical * gameParams.tileWidth + (gameParams.boardColsLogical -1) * gameParams.gap + gameParams.gap/2 + gameParams.boardPadding/2;
+            }
+            if (r_array_idx > 0 && r_array_idx <= gameParams.boardRowsLogical) {
+                y = gameParams.boardPadding + (r_array_idx - 1) * (gameParams.tileHeight + gameParams.gap) + gameParams.tileHeight / 2;
+            } else if (r_array_idx === 0) { 
+                y = gameParams.boardPadding / 2 - gameParams.gap/2;
+            } else { 
+                y = gameParams.boardPadding + gameParams.boardRowsLogical * gameParams.tileHeight + (gameParams.boardRowsLogical -1) * gameParams.gap + gameParams.gap/2 + gameParams.boardPadding/2;
+            }
+            return { x, y };
+        }
+        function drawConnectionPath(pathPoints, color = 'var(--cute-blue)', duration = 500) { /* ... (same as before) ... */ 
+            if (!pathPoints || pathPoints.length < 2) return;
+            clearPathCanvas(); 
+            pathCtx.beginPath();
+            pathCtx.strokeStyle = color; 
+            pathCtx.lineWidth = Math.max(3, gameParams.tileWidth / 10); 
+            pathCtx.lineCap = 'round'; pathCtx.lineJoin = 'round';
+            const firstPointCoords = getTileCenter(pathPoints[0].r, pathPoints[0].c);
+            pathCtx.moveTo(firstPointCoords.x, firstPointCoords.y);
+            for (let i = 1; i < pathPoints.length; i++) {
+                const pointCoords = getTileCenter(pathPoints[i].r, pathPoints[i].c);
+                pathCtx.lineTo(pointCoords.x, pointCoords.y);
+            }
+            pathCtx.stroke();
+            if (pathClearTimeout) clearTimeout(pathClearTimeout);
+            pathClearTimeout = setTimeout(clearPathCanvas, duration); 
+        }
+
+        // --- Timer Functions ---
+        function startTimer() { /* ... (same as before) ... */ 
+            clearInterval(timerInterval); timeLeft = gameParams.timeLimit; 
+            timerDisplay.textContent = `时间: ${formatTime(timeLeft)}`; gameActive = true;
+            timerInterval = setInterval(() => {
+                timeLeft--; timerDisplay.textContent = `时间: ${formatTime(timeLeft)}`;
+                if (timeLeft < 0) {
+                    timeLeft = 0; timerDisplay.textContent = `时间: ${formatTime(timeLeft)}`;
+                    handleGameOver("time"); 
+                }
+            }, 1000);
+        }
+
+        // --- Pathfinding ---
+        function isPathClear(r1,c1,r2,c2){if(r1===r2){for(let i=Math.min(c1,c2)+1;i<Math.max(c1,c2);i++)if(gameBoardArray[r1][i]!==null)return false;return true}if(c1===c2){for(let i=Math.min(r1,r2)+1;i<Math.max(r1,r2);i++)if(gameBoardArray[i][c1]!==null)return false;return true}return false}
+        function checkZeroTurn(t1,t2){if(t1.r!==t2.r&&t1.c!==t2.c)return null;if(isPathClear(t1.r,t1.c,t2.r,t2.c))return[{r:t1.r,c:t1.c},{r:t2.r,c:t2.c}];return null}
+        function checkOneTurn(t1,t2){const p1c={r:t1.r,c:t2.c},p2c={r:t2.r,c:t1.c};if(gameBoardArray[p1c.r][p1c.c]===null&&isPathClear(t1.r,t1.c,p1c.r,p1c.c)&&isPathClear(p1c.r,p1c.c,t2.r,t2.c))return[{r:t1.r,c:t1.c},p1c,{r:t2.r,c:t2.c}];if(gameBoardArray[p2c.r][p2c.c]===null&&isPathClear(t1.r,t1.c,p2c.r,p2c.c)&&isPathClear(p2c.r,p2c.c,t2.r,t2.c))return[{r:t1.r,c:t1.c},p2c,{r:t2.r,c:t2.c}];return null}
+        function checkTwoTurnsComprehensive(t1,t2){for(let ci=0;ci<gameParams.boardColsPhysical;ci++){const p={r:t1.r,c:ci};if((gameBoardArray[p.r][p.c]===null||(p.r===t2.r&&p.c===t2.c))&&isPathClear(t1.r,t1.c,p.r,p.c)){const op=checkOneTurn(p,t2);if(op){if(p.r===t1.r&&p.c===t1.c&&!(p.r===op[1].r&&p.c===op[1].c))continue;if(!(p.r===t2.r&&p.c===t2.c)&&gameBoardArray[p.r][p.c]!==null)continue;return[{r:t1.r,c:t1.c},...op]}}}for(let ri=0;ri<gameParams.boardRowsPhysical;ri++){const p={r:ri,c:t1.c};if((gameBoardArray[p.r][p.c]===null||(p.r===t2.r&&p.c===t2.c))&&isPathClear(t1.r,t1.c,p.r,p.c)){const op=checkOneTurn(p,t2);if(op){if(p.r===t1.r&&p.c===t1.c&&!(p.r===op[1].r&&p.c===op[1].c))continue;if(!(p.r===t2.r&&p.c===t2.c)&&gameBoardArray[p.r][p.c]!==null)continue;return[{r:t1.r,c:t1.c},...op]}}}return null}
+        function canConnect(t1,t2){if(t1.r===t2.r&&t1.c===t2.c)return null;let p;p=checkZeroTurn(t1,t2);if(p)return p;p=checkOneTurn(t1,t2);if(p)return p;p=checkTwoTurnsComprehensive(t1,t2);if(p)return p;return null}
+        
+        // --- "No More Moves" & Hint Logic ---
+        function findAllPossibleMoves(){const at=[];for(let r=0;r<gameParams.boardRowsPhysical;r++)for(let c=0;c<gameParams.boardColsPhysical;c++)if(gameBoardArray[r][c]!==null){const e=gameBoardElement.querySelector(`.tile[data-row="${r}"][data-col="${c}"]`);at.push({r,c,icon:gameBoardArray[r][c],element:e})}if(at.length<2)return null;for(let i=0;i<at.length;i++)for(let j=i+1;j<at.length;j++){const t1=at[i],t2=at[j];if(t1.icon===t2.icon){const p=canConnect(t1,t2);if(p)return{tile1:t1,tile2:t2,path:p}}}return null}
+        async function checkAndHandleNoMoreMoves(){if(remainingTiles===0||!gameActive)return;if(firstSelectedTile&&firstSelectedTile.element){firstSelectedTile.element.classList.remove('selected');firstSelectedTile=null;clearPathCanvas()}const pm=findAllPossibleMoves();if(!pm){if(autoShuffleAttempts<MAX_AUTO_SHUFFLE_ATTEMPTS){autoShuffleAttempts++;showMessage("没有可消除的方块了，尝试自动洗牌...","info",3e3);await new Promise(r=>setTimeout(r,2e3));await shuffleBoard(!0)}else{showMessage("自动洗牌后仍无解。请手动洗牌或重新开始。","error",5e3);playSound('error')}}else autoShuffleAttempts=0}
+        async function provideHint(){await ensureAudioStarted();playSound('buttonClick');if(!gameActive||remainingTiles===0){showMessage("游戏尚未开始或已结束。","info");return}if(hintCount<=0){showMessage("提示次数已用完!","error");playSound('error');return}if(firstSelectedTile&&firstSelectedTile.element){firstSelectedTile.element.classList.remove('selected');firstSelectedTile=null}clearPathCanvas();if(hintHighlightTimeout)clearTimeout(hintHighlightTimeout);const m=findAllPossibleMoves();if(m&&m.tile1.element&&m.tile2.element){hintCount--;updateHintsDisplay();showMessage("找到可消除的方块!","info",1500);m.tile1.element.classList.add('hint-highlight');m.tile2.element.classList.add('hint-highlight');drawConnectionPath(m.path,'#FFD700',1500);hintHighlightTimeout=setTimeout(()=>{m.tile1.element.classList.remove('hint-highlight');m.tile2.element.classList.remove('hint-highlight')},1500)}else{showMessage("当前没有可用的提示。","info");playSound('error')}}
+
+        // --- Modal Logic ---
+        function createEndGameModal(title, message, buttons) { /* ... (same as before) ... */ 
+            endGameModalOverlay.innerHTML = ''; 
+            const modalContent = document.createElement('div');
+            modalContent.className = 'modal-content';
+            const titleElement = document.createElement('h2');
+            titleElement.textContent = title;
+            modalContent.appendChild(titleElement);
+            const messageElement = document.createElement('p');
+            messageElement.innerHTML = message; 
+            modalContent.appendChild(messageElement);
+            const buttonsDiv = document.createElement('div');
+            buttonsDiv.className = 'modal-buttons';
+            buttons.forEach(buttonConfig => {
+                const button = document.createElement('button');
+                button.textContent = buttonConfig.text;
+                button.className = 'btn'; 
+                if (buttonConfig.styleClass) { 
+                    button.classList.add(...buttonConfig.styleClass.split(' '));
+                }
+                button.onclick = async () => {
+                    const audioCanPlay = await ensureAudioStarted();
+                    if(audioCanPlay) playSound('buttonClick');
+                    hideEndGameModal();
+                    buttonConfig.action();
+                };
+                buttonsDiv.appendChild(button);
+            });
+            modalContent.appendChild(buttonsDiv);
+            endGameModalOverlay.appendChild(modalContent);
+            endGameModalOverlay.classList.add('show');
+        }
+        function hideEndGameModal() { /* ... (same as before) ... */ 
+            endGameModalOverlay.classList.remove('show');
+            setTimeout(() => {
+                 if (!endGameModalOverlay.classList.contains('show')) { 
+                    endGameModalOverlay.innerHTML = ''; 
+                 }
+            }, 300); 
+        }
+
+
+        // --- Win/Clear/Fail Logic ---
+        function handleGameOver(reason) { /* ... (same as before) ... */ 
+            clearInterval(timerInterval); 
+            gameActive = false;
+            let reasonText = "";
+            if (reason === "time") reasonText = "时间耗尽！";
+            else if (reason === "errors") reasonText = "错误次数过多！";
+            
+            stopBGM(); 
+            playSound('gameOver');
+            gameBoardElement.style.pointerEvents = 'none';
+
+            createEndGameModal(
+                "闯关失败！",
+                `太遗憾了，因为${reasonText}<br>这次没有成功哦，再试一次吧！`,
+                [
+                    { text: "重玩本关", action: () => initGame(currentLevelIndex), styleClass: "bg-yellow-500" },
+                    { text: "返回选关", action: showLevelSelectScreen, styleClass: "bg-gray-400" }
+                ]
+            );
+        }
+
+        function checkWinCondition(){ /* ... (same as before) ... */ 
+            if(remainingTiles === 0 && gameActive){
+                clearInterval(timerInterval); gameActive = false;
+                const currentLevel = levels[currentLevelIndex];
+                let starsEarned = 0;
+                const timePercentage = (timeLeft / gameParams.timeLimit) * 100;
+                if (timePercentage > 66) starsEarned = 3;
+                else if (timePercentage > 33) starsEarned = 2;
+                else if (timeLeft >= 0) starsEarned = 1; 
+                levels[currentLevelIndex].starsEarned = Math.max(levels[currentLevelIndex].starsEarned || 0, starsEarned);
+                saveProgress(); 
+                stopBGM(); 
+                playSound('win');
+                gameBoardElement.style.pointerEvents = 'none'; 
+                clearPathCanvas();
+                let modalTitle = `太棒了！`;
+                let modalMessage = `${currentLevel.levelName} 完成！<br>你获得了 ${'★'.repeat(starsEarned)}${'☆'.repeat(3-starsEarned)}！`;
+                let modalButtons = [];
+                if (currentLevelIndex + 1 < levels.length) {
+                    maxUnlockedLevel = Math.max(maxUnlockedLevel, currentLevel.levelNumber + 1);
+                    saveProgress(); 
+                    console.log(`Level ${currentLevel.levelNumber + 1} unlocked! Max unlocked: ${maxUnlockedLevel}`);
+                    modalButtons.push({ 
+                        text: "下一关卡", 
+                        action: () => { currentLevelIndex++; actualGameStart(); },
+                        styleClass: "bg-green-500"
+                    });
+                } else {
+                    modalMessage += "<br>所有关卡都已完成！🥳";
+                    console.log("All levels completed!");
+                }
+                modalButtons.push({ text: "重玩本关", action: () => initGame(currentLevelIndex) });
+                modalButtons.push({ text: "返回选关", action: showLevelSelectScreen, styleClass: "bg-gray-400" });
+                createEndGameModal(modalTitle, modalMessage, modalButtons);
+            }
+        }
+        function clearTiles(t1,t2,cp){drawConnectionPath(cp);playSound('match');setTimeout(async()=>{t1.element.classList.add('cleared');t1.element.classList.remove('selected');t2.element.classList.add('cleared');t2.element.classList.remove('selected');gameBoardArray[t1.r][t1.c]=null;gameBoardArray[t2.r][t2.c]=null;score+=10;remainingTiles-=2;scoreDisplay.textContent=`得分: ${score}`;
+            showMessage("成功消除!", "success", 1000); 
+            if(remainingTiles>0&&gameActive){await new Promise(r=>setTimeout(r,50));await checkAndHandleNoMoreMoves()}setTimeout(checkWinCondition,100)},100)}
+
+        // --- Game Setup and UI ---
+        function createTilesList() { /* ... (same as before) ... */ 
+            const numTileTypes = gameParams.tileTypesCount;
+            const totalTilesForLevel = gameParams.totalLogicalTiles;
+            const currentIconSet = gameParams.currentIconSet; 
+            if (totalTilesForLevel % 2 !== 0) { showMessage("当前关卡棋盘大小设置错误!", "error"); return []; }
+            if (numTileTypes > currentIconSet.length) { console.warn(`Level requires ${numTileTypes} types, but icon set only has ${currentIconSet.length}. Using all available.`); }
+            const tiles = []; 
+            const iconsToUse = currentIconSet.slice(0, Math.min(numTileTypes, currentIconSet.length));
+            const numPairs = totalTilesForLevel / 2;
+            for (let i = 0; i < numPairs; i++) { const icon = iconsToUse[i % iconsToUse.length]; tiles.push(icon, icon); }
+            shuffleArray(tiles); return tiles;
+        }
+
+        function renderBoard(){ /* ... (same as before) ... */ 
+            gameBoardElement.innerHTML='';
+            gameBoardElement.style.gridTemplateColumns=`repeat(${gameParams.boardColsLogical},${gameParams.tileWidth}px)`;
+            gameBoardElement.style.gridTemplateRows=`repeat(${gameParams.boardRowsLogical},${gameParams.tileHeight}px)`;
+            gameBoardElement.style.gap=`${gameParams.gap}px`;
+            gameBoardElement.style.padding=`${gameParams.boardPadding}px`;
+            gameBoardElement.style.pointerEvents='auto';
+            setupCanvas(); 
+            for(let r_arr = 1; r_arr <= gameParams.boardRowsLogical; r_arr++) {
+                for(let c_arr = 1; c_arr <= gameParams.boardColsLogical; c_arr++) {
+                    const td=document.createElement('div');
+                    td.dataset.row = r_arr; 
+                    td.dataset.col = c_arr;
+                    const ic=gameBoardArray[r_arr][c_arr];
+                    if(ic){td.classList.add('tile');td.textContent=ic;td.addEventListener('click',handleTileClick)}
+                    else {td.classList.add('tile','empty');}
+                    gameBoardElement.appendChild(td);
+                }
+            }
+        }
+        async function handleTileClick(e){ /* ... (same as before) ... */ 
+            const ce=e.currentTarget;if(!ce||!ce.dataset)return;
+            const acp=await ensureAudioStarted();
+            if(!gameActive)return;
+            const rs=ce.dataset.row,cs=ce.dataset.col;if(typeof rs==='undefined'||typeof cs==='undefined')return;
+            const r=parseInt(rs),c=parseInt(cs);if(isNaN(r)||isNaN(c))return;
+            if(!gameBoardArray[r] || typeof gameBoardArray[r][c] === 'undefined'){ console.error("Clicked tile's array data is invalid", {r,c}); return; }
+            const i=gameBoardArray[r][c];if(!i||ce.classList.contains('cleared'))return;
+            if(acp)playSound('click');
+            const h=gameBoardElement.querySelectorAll('.hint-highlight');
+            h.forEach(ht=>ht.classList.remove('hint-highlight'));
+            if(hintHighlightTimeout)clearTimeout(hintHighlightTimeout);
+            if(!firstSelectedTile){firstSelectedTile={element:ce,r,c,icon:i};ce.classList.add('selected')}
+            else{
+                if(firstSelectedTile.element===ce){ce.classList.remove('selected');firstSelectedTile=null}
+                else{
+                    const sst={element:ce,r,c,icon:i};
+                    if(firstSelectedTile.icon===sst.icon){
+                        const cp=canConnect(firstSelectedTile,sst);
+                        if(cp){clearTiles(firstSelectedTile,sst,cp);firstSelectedTile=null}
+                        else{
+                            showMessage("这两个图案无法连接!","error",1500);if(acp)playSound('error');
+                            connectionErrors++; updateErrorsDisplay();
+                            if (connectionErrors >= gameParams.maxErrorsAllowed) { handleGameOver("errors"); return; }
+                            firstSelectedTile.element.classList.remove('selected');firstSelectedTile=null;
+                        }
+                    }else{
+                        showMessage("图案不匹配!","error",1e3);if(acp)playSound('error');
+                        connectionErrors++; updateErrorsDisplay();
+                        if (connectionErrors >= gameParams.maxErrorsAllowed) { handleGameOver("errors"); return; }
+                        firstSelectedTile.element.classList.remove('selected');
+                        sst.element.classList.add('selected');firstSelectedTile=sst;
+                    }
+                }
+            }
+        }
+        async function shuffleBoard(ias=false){ /* ... (same as before) ... */ 
+            let acp=false;if(!ias){acp=await ensureAudioStarted();if(acp)playSound('buttonClick')}
+            if(!gameActive&&remainingTiles>0){}else if(!gameActive&&remainingTiles===0){showMessage("游戏已通关，无需洗牌。","info");return}else if(!gameActive){showMessage("游戏尚未开始，无需洗牌。","info");return}if(remainingTiles===0){showMessage("所有方块都已消除，无需洗牌。","info");return}
+            const cd=[];for(let r=1;r<=gameParams.boardRowsLogical;r++)for(let c=1;c<=gameParams.boardColsLogical;c++)if(gameBoardArray[r][c]!==null)cd.push({icon:gameBoardArray[r][c],r_orig:r,c_orig:c});if(cd.length===0){if(!ias)showMessage("没有可洗牌的方块了。","info");return}
+            const io=cd.map(t=>t.icon);shuffleArray(io);for(let i=0;i<cd.length;i++){const op=cd[i];gameBoardArray[op.r_orig][op.c_orig]=io[i]}
+            if(firstSelectedTile&&firstSelectedTile.element)firstSelectedTile.element.classList.remove('selected');firstSelectedTile=null;clearPathCanvas();renderBoard();if(!ias){showMessage("棋盘已洗牌!","info",1500);autoShuffleAttempts=0}await new Promise(r=>setTimeout(r,50));await checkAndHandleNoMoreMoves()
+        }
+
+        let resizeTimeout;
+        function handleWindowResize(){clearTimeout(resizeTimeout);resizeTimeout=setTimeout(async()=>{console.log("Window resized."); if(gameActive) { await initGame(currentLevelIndex); } else { updateGameParametersAndStyles(); showLevelSelectScreen(); }},250)}
+        
+        function showMainMenuScreen() { /* ... (same as before) ... */ 
+            mainMenuContainer.innerHTML = `
+                <h1 class="main-title">可爱连连看乐园</h1>
+                <button id="initialStartGameButton">开始挑战！</button>
+            `;
+            mainMenuContainer.style.display = 'flex';
+            gameWrapper.style.display = 'none';
+            stopBGM(); 
+            const initialStartBtn = document.getElementById('initialStartGameButton');
+            if (initialStartBtn) {
+                initialStartBtn.onclick = async () => {
+                    const audioCanPlay = await ensureAudioStarted();
+                    if(audioCanPlay) playSound('buttonClick'); 
+                    showLevelSelectScreen();
+                };
+            }
+        }
+
+        function showLevelSelectScreen() { /* ... (same as before) ... */ 
+            mainMenuContainer.innerHTML = '<h1 class="level-select-title">选择关卡</h1>';
+            const levelListDiv = document.createElement('div');
+            levelListDiv.id = 'levelListContainer'; 
+            levels.forEach((level, index) => {
+                const levelButton = document.createElement('button');
+                const stars = level.starsEarned || 0;
+                const starIcons = `<span class="stars-display"><span class="star-filled">${'★'.repeat(stars)}</span><span class="star-empty">${'☆'.repeat(3-stars)}</span></span>`;
+                levelButton.innerHTML = `第 ${level.levelNumber} 关 <br> <span class="level-name">${level.levelName}</span> ${starIcons}`;
+                levelButton.className = 'level-button';
+                if (level.levelNumber > maxUnlockedLevel) {
+                    levelButton.disabled = true;
+                    levelButton.innerHTML = `第 ${level.levelNumber} 关 <br> <span class="level-name">${level.levelName}</span> <span class="lock-icon">🔒</span>`;
+                } else {
+                    levelButton.onclick = async () => {
+                        const audioCanPlay = await ensureAudioStarted();
+                        if(audioCanPlay) playSound('buttonClick');
+                        currentLevelIndex = index;
+                        actualGameStart();
+                    };
+                }
+                levelListDiv.appendChild(levelButton);
+            });
+            mainMenuContainer.appendChild(levelListDiv);
+            mainMenuContainer.style.display = 'flex';
+            gameWrapper.style.display = 'none';
+            stopBGM(); 
+        }
+
+        async function actualGameStart() { /* ... (same as before) ... */ 
+            mainMenuContainer.style.display = 'none';
+            gameWrapper.style.display = 'flex'; 
+            await initGame(currentLevelIndex); 
+        }
+
+        async function initGame(levelIdx) { /* ... (same as before) ... */ 
+            currentLevelIndex = levelIdx; 
+            const currentLevel = levels[currentLevelIndex];
+            gameParams.boardRowsLogical = currentLevel.boardRows;
+            gameParams.boardColsLogical = currentLevel.boardCols;
+            gameParams.timeLimit = currentLevel.timeLimit;
+            gameParams.tileTypesCount = currentLevel.tileTypesCount;
+            gameParams.totalLogicalTiles = currentLevel.boardRows * currentLevel.boardCols;
+            gameParams.boardRowsPhysical = currentLevel.boardRows + 2; 
+            gameParams.boardColsPhysical = currentLevel.boardCols + 2; 
+            gameParams.currentIconSet = currentLevel.theme.iconSet; 
+            gameParams.maxErrorsAllowed = currentLevel.maxErrors; 
+            document.body.style.background = currentLevel.theme.backgroundColor; 
+            levelTitleElement.textContent = `第 ${currentLevel.levelNumber} 关: ${currentLevel.levelName}`; 
+            levelSelectButton.textContent = "关卡选择";
+            levelSelectButton.style.backgroundColor = "var(--cute-purple)";
+            levelSelectButton.style.color = "var(--text-dark)";
+            levelSelectButton.style.display = 'flex'; 
+            levelSelectButton.onclick = async () => {
+                const audioCanPlay = await ensureAudioStarted();
+                if(audioCanPlay) playSound('buttonClick');
+                gameActive = false; 
+                clearInterval(timerInterval); 
+                stopBGM(); 
+                showLevelSelectScreen();
+            };
+            if (controls) { 
+                const existingNextLevelButton = controls.querySelector('.next-level-btn');
+                if (existingNextLevelButton) { existingNextLevelButton.remove(); }
+            } else { console.error("Controls DIV not found during initGame for removing next level button."); }
+            updateGameParametersAndStyles(); 
+            console.log("Initializing Level " + currentLevel.levelNumber + " with params:", JSON.stringify(gameParams));
+            clearInterval(timerInterval);
+            if(pathClearTimeout) clearTimeout(pathClearTimeout); 
+            if(hintHighlightTimeout) clearTimeout(hintHighlightTimeout);
+            firstSelectedTile = null;
+            gameBoardArray = Array(gameParams.boardRowsPhysical).fill(null).map(() => Array(gameParams.boardColsPhysical).fill(null));
+            remainingTiles = gameParams.totalLogicalTiles; 
+            autoShuffleAttempts = 0; hintCount = INITIAL_HINTS; 
+            connectionErrors = 0; 
+            updateHintsDisplay(); updateErrorsDisplay(); 
+            const tilesList = createTilesList(); 
+            if (tilesList.length === 0) return;
+            let tileIdx = 0;
+            for (let r = 1; r <= gameParams.boardRowsLogical; r++) { 
+                for (let c = 1; c <= gameParams.boardColsLogical; c++) { 
+                    if (tileIdx < tilesList.length) gameBoardArray[r][c] = tilesList[tileIdx++];
+                }
+            }
+            renderBoard(); 
+            score = 0; scoreDisplay.textContent = `得分: ${score}`;
+            await ensureAudioStarted(); 
+            playBGM(currentLevel.theme.name); 
+            startTimer(); 
+            await new Promise(resolve => setTimeout(resolve, 100)); 
+            await checkAndHandleNoMoreMoves(); 
+            gameActive = true; 
+        }
+
+        restartButton.addEventListener('click', async () => {
+            const audioCanPlay = await ensureAudioStarted();
+            if(audioCanPlay) playSound('buttonClick');
+            stopBGM(); 
+            initGame(currentLevelIndex); 
+        });
+        shuffleButton.addEventListener('click', () => shuffleBoard(false)); 
+        hintButton.addEventListener('click', provideHint); 
+        levelSelectButton.addEventListener('click', async () => { 
+            const audioCanPlay = await ensureAudioStarted();
+            if(audioCanPlay) playSound('buttonClick');
+            gameActive = false; 
+            clearInterval(timerInterval); 
+            stopBGM();
+            showLevelSelectScreen();
+        });
+        
+        document.body.addEventListener('click', ensureAudioStarted, { once: true });
+        window.addEventListener('resize', handleWindowResize); 
+
+        window.onload = () => {
+            loadProgress(); 
+            updateGameParametersAndStyles(); 
+            mainMenuContainer.style.display = 'flex'; 
+            gameWrapper.style.display = 'none'; 
+            showMainMenuScreen(); 
+        };
+    </script>
+</body>
+</html>
