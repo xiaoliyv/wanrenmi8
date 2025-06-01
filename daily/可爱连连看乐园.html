@@ -148,7 +148,7 @@
             border-radius: 20px; 
             box-shadow: 0 6px 15px rgba(0,0,0,0.1); 
             width: 95vw; 
-            max-width: 600px; 
+            max-width: 98vw; /* Allow it to be wider on small screens to fit board */
             border: 1px solid rgba(255,255,255,0.25);
             margin: 10px 0; 
         }
@@ -175,8 +175,8 @@
             display: flex;
             justify-content: center; 
             width: 100%;
-            max-width: 300px; 
-            gap: 10px; 
+            max-width: 320px; /* Max width for a row, can be adjusted */
+            gap: 8px; 
             flex-wrap: wrap; 
         }
         .info-panel span {
@@ -187,7 +187,7 @@
             color: var(--text-dark);
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             margin: 2px; 
-            min-width: 100px; 
+            min-width: 90px; /* Adjusted min-width */
         }
          #errorsDisplay { 
             color: #ef4444; 
@@ -270,19 +270,19 @@
             justify-content: space-around; 
             gap: 5px; 
             width: 100%;
-            max-width: 320px; 
+            max-width: 300px; /* Max width for controls area on mobile */
         }
         .btn.icon-btn { 
             padding: 8px; 
-            width: 44px;  
-            height: 44px;
+            width: 40px;  /* Slightly smaller icon buttons for mobile */
+            height: 40px;
             border-radius: 50%; 
-            font-size: 1.2rem; 
+            font-size: 1.1rem; 
         }
         .btn.icon-btn svg {
             margin-right: 0; 
-            width: 1.5em; 
-            height: 1.5em;
+            width: 1.3em; 
+            height: 1.3em;
         }
 
         .btn { 
@@ -415,7 +415,7 @@
             .controls .btn { flex-basis: auto; } 
             .btn.icon-btn { width: 50px; height: 50px; } 
             .btn.icon-btn svg { width: 1.5em; height: 1.5em;}
-            .btn { padding: 12px 24px; font-size: 1rem; } 
+            /* .btn { padding: 12px 24px; font-size: 1rem; }  Reverted this general btn style for now */
             .main-title { font-size: 4rem; margin-bottom: 50px;} 
             #initialStartGameButton { font-size: 2rem; padding: 22px 50px;}
             .level-select-title { font-size: 2.8rem; }
@@ -479,7 +479,7 @@
                     </svg>
                 </button>
                  <button id="levelSelectButton" class="btn icon-btn" style="background-color: var(--cute-purple); color: var(--text-dark);" title="关卡选择">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25A2.25 2.25 0 0 1 13.5 8.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" /> </svg>
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" /> </svg>
                 </button>
             </div>
         </div>
@@ -515,7 +515,7 @@
             objects: ['⚽', '🏀', '🏈', '🎱', '🎁', '🎈', '🎉', '🎄', '💡', '💻', '📱', '⏰', '💎', '🔔', '🔑', '👑', '☂️', '🎨', '📚', '✏️'],
             sweets: ['🍰', '🧁', '🍩', '🍪', '🍬', '🍭', '🍫', '🍦', '🍧', '🍮', '🍯', '🥧', '🥨', '🧇', '🍡', '🥮', '🥠', '🍥', '🧋', '🥤'],
             vehicles: ['🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🛵', '🚲', '✈️', '🚀', '🛸', '🚁', '⛵️'],
-            music: ['🎸', '🎺', '🎷', '🎻', '🎹', '🥁', '🎤', '🎧', '🎼', '🎵', '🎶', '🪕', '🪗', '🪘', '🪇', '🪈', '🪉', '🪊', '📻', '🎙️'],
+            music: ['🎸', '🎺', '🎷', '🎻', '🎹', '🥁', '🎤', '🎧', '🎼', '🎵', '🎶', '🪕', '🪗', '🪘', '🎻', '🎺', '🥁', '🎷', '🎹', '🎤'], // Replaced potentially problematic emojis
             weather: ['☀️', '🌙', '⭐', '☁️', '⛅', '⛈️', '🌤️', '🌥️', '🌦️', '🌧️', '🌨️', '🌩️', '🌪️', '🌫️', '🌬️', '🌈', '❄️', '☃️', '⛄', '🌡️'],
             sports: ['⚽', '🏀', '🏈', '⚾', '🥎', '🏐', '🏉', '🎱', '🥏', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🪁', '🏹', '🎣', '🥊']
         };
@@ -631,7 +631,7 @@
 
         // --- Audio Setup (Tone.js) ---
         let sounds = {}; 
-        function initializeAudio() { 
+        function initializeAudio() { /* ... (same as before, with PolySynth fix) ... */ 
             if (audioInitialized) return; 
             sounds.click = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
             sounds.match1 = new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.05, release: 0.2 }, volume: -12 }).toDestination();
@@ -781,16 +781,18 @@
 
             const boardInnerWidth = containerWidthForCalc - (2 * currentBoardPadding) - (2 * 2); 
             let calculatedTileWidth = (boardInnerWidth - (currentBoardColsLogical - 1) * currentGap) / currentBoardColsLogical;
+            
+            const minTileSize = 24; // Absolute minimum tile size
 
             if (iw < 480) { 
-                gameParams.tileWidth = Math.max(24, Math.floor(calculatedTileWidth)); 
-                gameParams.gap = 2; gameParams.boardPadding = 4; gameParams.fontSize = 14;
+                gameParams.tileWidth = Math.max(minTileSize, Math.floor(calculatedTileWidth)); 
+                gameParams.gap = 2; gameParams.boardPadding = 4; gameParams.fontSize = Math.max(12, Math.floor(gameParams.tileWidth * 0.5));
             } else if (iw < 768) { 
-                gameParams.tileWidth = Math.max(30, Math.floor(calculatedTileWidth));
-                gameParams.gap = 3; gameParams.boardPadding = 6; gameParams.fontSize = 18;
+                gameParams.tileWidth = Math.max(minTileSize + 4, Math.floor(calculatedTileWidth));
+                gameParams.gap = 3; gameParams.boardPadding = 6; gameParams.fontSize = Math.max(14, Math.floor(gameParams.tileWidth * 0.5));
             } else { 
-                gameParams.tileWidth = Math.max(36, Math.floor(calculatedTileWidth));
-                gameParams.gap = 4; gameParams.boardPadding = 8; gameParams.fontSize = 22;
+                gameParams.tileWidth = Math.max(minTileSize + 8, Math.floor(calculatedTileWidth));
+                gameParams.gap = 4; gameParams.boardPadding = 8; gameParams.fontSize = Math.max(16, Math.floor(gameParams.tileWidth * 0.5));
             }
             gameParams.tileHeight = gameParams.tileWidth; 
             document.documentElement.style.setProperty('--tile-font-size', gameParams.fontSize + 'px');
