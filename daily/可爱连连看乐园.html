@@ -161,9 +161,9 @@
         }
         .info-panel {
             display: flex;
-            flex-direction: column; /* Stack rows vertically */
+            flex-direction: column; 
             align-items: center; 
-            gap: 5px; /* Gap between rows */
+            gap: 5px; 
             width: 100%;
             max-width: 100%; 
             margin-bottom: 10px; 
@@ -173,10 +173,11 @@
         }
         .info-row {
             display: flex;
-            justify-content: space-around; /* Distribute items in a row */
+            justify-content: center; 
             width: 100%;
-            max-width: 280px; /* Max width for a row */
-            gap: 8px; /* Gap between items in a row */
+            max-width: 300px; 
+            gap: 10px; 
+            flex-wrap: wrap; 
         }
         .info-panel span {
             padding: 5px 8px; 
@@ -185,8 +186,8 @@
             text-align: center;
             color: var(--text-dark);
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            flex-grow: 1; /* Allow items to grow and fill space */
-            flex-basis: 0; /* Distribute space evenly */
+            margin: 2px; 
+            min-width: 100px; 
         }
          #errorsDisplay { 
             color: #ef4444; 
@@ -265,17 +266,26 @@
         .controls {
             margin-top: 15px; 
             display: flex;
-            flex-wrap: wrap; 
-            justify-content: center; 
-            gap: 8px; 
+            flex-wrap: nowrap; 
+            justify-content: space-around; 
+            gap: 5px; 
             width: 100%;
-            max-width: 300px; /* Limit width of controls area on mobile */
+            max-width: 320px; 
         }
-        .controls .btn {
-            flex-basis: calc(50% - 4px); /* 2 buttons per row, accounting for gap */
-            margin: 2px 0; /* Add a small vertical margin */
+        .btn.icon-btn { 
+            padding: 8px; 
+            width: 44px;  
+            height: 44px;
+            border-radius: 50%; 
+            font-size: 1.2rem; 
         }
-        .btn {
+        .btn.icon-btn svg {
+            margin-right: 0; 
+            width: 1.5em; 
+            height: 1.5em;
+        }
+
+        .btn { 
             padding: 8px 15px; 
             font-size: 0.85rem; 
             font-weight: 700; 
@@ -292,7 +302,7 @@
             text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
         }
         .btn svg { 
-            width: 1em;
+            width: 1em; 
             height: 1em;
             margin-right: 0.4em;
         }
@@ -401,9 +411,11 @@
             .game-title { font-size: 2.0rem; margin-bottom: 18px;} 
             .info-panel { flex-direction: row; gap: 16px; font-size: 1.1rem; max-width: 450px;} 
             .info-panel span { width: auto; }
-            .controls { gap: 15px; max-width: none; } /* Allow controls to expand */
-            .controls .btn { flex-basis: auto; } /* Reset basis for larger screens */
-            .btn { padding: 12px 24px; font-size: 1rem; }
+            .controls { gap: 15px; max-width: none; flex-wrap: nowrap;} 
+            .controls .btn { flex-basis: auto; } 
+            .btn.icon-btn { width: 50px; height: 50px; } 
+            .btn.icon-btn svg { width: 1.5em; height: 1.5em;}
+            .btn { padding: 12px 24px; font-size: 1rem; } 
             .main-title { font-size: 4rem; margin-bottom: 50px;} 
             #initialStartGameButton { font-size: 2rem; padding: 22px 50px;}
             .level-select-title { font-size: 2.8rem; }
@@ -451,26 +463,23 @@
             </div>
 
             <div class="controls">
-                <button id="shuffleButton" class="btn bg-green-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                    </svg>
-                    洗牌牌
-                </button>
-                <button id="hintButton" class="btn bg-yellow-500"> 
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.354a15.054 15.054 0 0 1-4.5 0M3.75 10.5h.008v.008H3.75V10.5Zm0 3.75h.008v.008H3.75V14.25Zm0 3.75h.008v.008H3.75V18Zm16.5-3.75h.008v.008H20.25V14.25Zm0 3.75h.008v.008H20.25V18Zm0 3.75h.008v.008H20.25V21.75Zm-3.75-11.25h.008v.008H16.5V10.5Zm0 3.75h.008v.008H16.5V14.25Zm0 3.75h.008v.008H16.5V18Z" />
-                    </svg>
-                    小提示
-                </button>
-                <button id="restartButton" class="btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
+                <button id="restartButton" class="btn icon-btn" title="重玩本关">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                     </svg>
-                    重玩本关
                 </button>
-                 <button id="levelSelectButton" class="btn" style="background-color: var(--cute-purple); color: var(--text-dark);">
-                    关卡选择
+                <button id="shuffleButton" class="btn icon-btn bg-green-500" title="洗牌牌">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                </button>
+                <button id="hintButton" class="btn icon-btn bg-yellow-500" title="小提示"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.354a15.054 15.054 0 0 1-4.5 0M3.75 10.5h.008v.008H3.75V10.5Zm0 3.75h.008v.008H3.75V14.25Zm0 3.75h.008v.008H3.75V18Zm16.5-3.75h.008v.008H20.25V14.25Zm0 3.75h.008v.008H20.25V18Zm0 3.75h.008v.008H20.25V21.75Zm-3.75-11.25h.008v.008H16.5V10.5Zm0 3.75h.008v.008H16.5V14.25Zm0 3.75h.008v.008H16.5V18Z" />
+                    </svg>
+                </button>
+                 <button id="levelSelectButton" class="btn icon-btn" style="background-color: var(--cute-purple); color: var(--text-dark);" title="关卡选择">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25A2.25 2.25 0 0 1 13.5 8.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" /> </svg>
                 </button>
             </div>
         </div>
@@ -622,7 +631,7 @@
 
         // --- Audio Setup (Tone.js) ---
         let sounds = {}; 
-        function initializeAudio() { /* ... (same as before, with PolySynth fix) ... */ 
+        function initializeAudio() { 
             if (audioInitialized) return; 
             sounds.click = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
             sounds.match1 = new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.05, release: 0.2 }, volume: -12 }).toDestination();
@@ -687,9 +696,9 @@
                 }, "4m")
             };
 
-            audioInitialized = true; console.log("Audio initialized with new BGM synths.");
+            audioInitialized = true; console.log("Audio initialized with BGM synths.");
         }
-        async function ensureAudioStarted() { /* ... (same as before) ... */ 
+        async function ensureAudioStarted() { 
             if (typeof Tone === 'undefined' || Tone === null) { console.warn("Tone.js is not loaded or not ready. Audio will be unavailable."); return false; }
             if (Tone.context.state !== 'running') {
                 try { await Tone.start(); console.log('Tone.js audio context started.'); } 
@@ -698,7 +707,7 @@
             if (!audioInitialized) { initializeAudio(); }
             return true; 
         }
-        async function playSound(soundType) { /* ... (same as before) ... */
+        async function playSound(soundType) {
             const audioIsReady = await ensureAudioStarted();
             if (!audioIsReady || !audioInitialized || typeof Tone === 'undefined' || 
                 (soundType === 'match' && (!sounds.match1 || !sounds.match2)) ||
@@ -760,40 +769,31 @@
             const gameContainerElement = gameWrapper.querySelector('.game-container');
             const referenceElementForWidth = gameWrapper.style.display !== 'none' ? gameContainerElement : mainMenuContainer;
             
-            // Ensure referenceElementForWidth is valid before accessing offsetWidth
-            if (!referenceElementForWidth) {
-                console.warn("Reference element for width calculation not found. Using window innerWidth as fallback.");
-                 // Fallback or default sizing logic if reference element isn't available
-                gameParams.tileWidth = (iw < 480) ? 30 : (iw < 768 ? 40 : 48);
-                gameParams.gap = (iw < 480) ? 2 : (iw < 768 ? 4 : 5);
-                gameParams.boardPadding = (iw < 480) ? 5 : (iw < 768 ? 8 : 10);
-                gameParams.fontSize = (iw < 480) ? 16 : (iw < 768 ? 20 : 24);
-            } else {
-                const containerWidth = referenceElementForWidth.offsetWidth * 0.9; // Using 90% of the reference width
-                const currentBoardColsLogical = gameParams.boardColsLogical; // Use logical columns for tile width calculation
-                
-                // Calculate available width for the grid itself (inside gameBoard's padding)
-                const boardPaddingTotal = 2 * gameParams.boardPadding;
-                const totalGapWidth = (currentBoardColsLogical - 1) * gameParams.gap;
-                const widthForTiles = containerWidth - boardPaddingTotal - totalGapWidth - (parseFloat(getComputedStyle(gameBoardElement).borderLeftWidth) * 2) ;
-                
-                let calculatedTileWidth = widthForTiles / currentBoardColsLogical;
-
-                if (iw < 480) { 
-                    gameParams.tileWidth = Math.max(24, Math.min(30, calculatedTileWidth)); // Adjusted min for very small screens
-                    gameParams.gap = 2; gameParams.boardPadding = 4; gameParams.fontSize = 14;
-                } else if (iw < 768) { 
-                    gameParams.tileWidth = Math.max(30, Math.min(38, calculatedTileWidth));
-                    gameParams.gap = 3; gameParams.boardPadding = 6; gameParams.fontSize = 18;
-                } else { 
-                    gameParams.tileWidth = Math.max(38, Math.min(48, calculatedTileWidth));
-                    gameParams.gap = 4; gameParams.boardPadding = 8; gameParams.fontSize = 22;
-                }
+            let containerWidthForCalc = iw * 0.9; 
+            if (referenceElementForWidth && referenceElementForWidth.offsetWidth > 0) {
+                containerWidthForCalc = referenceElementForWidth.offsetWidth;
             }
 
+            const currentBoardColsLogical = gameParams.boardColsLogical; 
+            
+            let currentGap = (iw < 480) ? 2 : (iw < 768 ? 3 : 4); 
+            let currentBoardPadding = (iw < 480) ? 4 : (iw < 768 ? 6 : 8); 
+
+            const boardInnerWidth = containerWidthForCalc - (2 * currentBoardPadding) - (2 * 2); 
+            let calculatedTileWidth = (boardInnerWidth - (currentBoardColsLogical - 1) * currentGap) / currentBoardColsLogical;
+
+            if (iw < 480) { 
+                gameParams.tileWidth = Math.max(24, Math.floor(calculatedTileWidth)); 
+                gameParams.gap = 2; gameParams.boardPadding = 4; gameParams.fontSize = 14;
+            } else if (iw < 768) { 
+                gameParams.tileWidth = Math.max(30, Math.floor(calculatedTileWidth));
+                gameParams.gap = 3; gameParams.boardPadding = 6; gameParams.fontSize = 18;
+            } else { 
+                gameParams.tileWidth = Math.max(36, Math.floor(calculatedTileWidth));
+                gameParams.gap = 4; gameParams.boardPadding = 8; gameParams.fontSize = 22;
+            }
             gameParams.tileHeight = gameParams.tileWidth; 
             document.documentElement.style.setProperty('--tile-font-size', gameParams.fontSize + 'px');
-            // Physical dimensions for array (used for pathfinding logic) remain logical + 2
             gameParams.boardRowsPhysical = gameParams.boardRowsLogical + 2;
             gameParams.boardColsPhysical = gameParams.boardColsLogical + 2;
         }
@@ -843,7 +843,6 @@
 
         // --- Canvas and Path Drawing ---
         function setupCanvas() { 
-            // Canvas dimensions should match the visual game board (logical tiles + padding + gaps)
             const canvasWidth = gameParams.boardColsLogical * gameParams.tileWidth + 
                                 (gameParams.boardColsLogical - 1) * gameParams.gap + 
                                 2 * gameParams.boardPadding;
@@ -854,7 +853,6 @@
             pathCanvas.width = canvasWidth;
             pathCanvas.height = canvasHeight;
             
-            // Position canvas to perfectly overlay the gameBoardElement
             pathCanvas.style.top = gameBoardElement.offsetTop + 'px';
             pathCanvas.style.left = gameBoardElement.offsetLeft + 'px';
 
@@ -863,24 +861,19 @@
         function clearPathCanvas() { pathCtx.clearRect(0, 0, pathCanvas.width, pathCanvas.height); }
         function getTileCenter(r_array_idx, c_array_idx) { 
             let x, y;
-            // Path points are relative to the gameBoardArray (which includes conceptual border)
-            // We need to map these to coordinates on the canvas, which is sized to the logical board + padding
-            
-            // If the point is on the conceptual border, draw it just outside the visible tiles, within the padding area.
-            if (c_array_idx === 0) { // Left border
-                x = gameParams.boardPadding / 2;
-            } else if (c_array_idx === gameParams.boardColsLogical + 1) { // Right border
-                x = gameParams.boardPadding + (gameParams.boardColsLogical * gameParams.tileWidth) + ((gameParams.boardColsLogical -1) * gameParams.gap) + gameParams.boardPadding / 2;
-            } else { // Inside logical board
+            if (c_array_idx > 0 && c_array_idx <= gameParams.boardColsLogical) {
                 x = gameParams.boardPadding + (c_array_idx - 1) * (gameParams.tileWidth + gameParams.gap) + gameParams.tileWidth / 2;
+            } else if (c_array_idx === 0) { 
+                x = gameParams.boardPadding / 2 - gameParams.gap/2; 
+            } else { 
+                x = gameParams.boardPadding + gameParams.boardColsLogical * gameParams.tileWidth + (gameParams.boardColsLogical -1) * gameParams.gap + gameParams.gap/2 + gameParams.boardPadding/2;
             }
-
-            if (r_array_idx === 0) { // Top border
-                y = gameParams.boardPadding / 2;
-            } else if (r_array_idx === gameParams.boardRowsLogical + 1) { // Bottom border
-                y = gameParams.boardPadding + (gameParams.boardRowsLogical * gameParams.tileHeight) + ((gameParams.boardRowsLogical -1) * gameParams.gap) + gameParams.boardPadding / 2;
-            } else { // Inside logical board
+            if (r_array_idx > 0 && r_array_idx <= gameParams.boardRowsLogical) {
                 y = gameParams.boardPadding + (r_array_idx - 1) * (gameParams.tileHeight + gameParams.gap) + gameParams.tileHeight / 2;
+            } else if (r_array_idx === 0) { 
+                y = gameParams.boardPadding / 2 - gameParams.gap/2;
+            } else { 
+                y = gameParams.boardPadding + gameParams.boardRowsLogical * gameParams.tileHeight + (gameParams.boardRowsLogical -1) * gameParams.gap + gameParams.gap/2 + gameParams.boardPadding/2;
             }
             return { x, y };
         }
