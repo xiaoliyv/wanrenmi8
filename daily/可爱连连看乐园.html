@@ -517,7 +517,7 @@
         // --- Emoji Icon Sets for Themes ---
         const EMOJI_SETS = {
             faces: ['😀', '😂', '😊', '😍', '🤔', '😎', '👻', '👽', '👾', '🤖', '🎃', '🤡', '🥳', '🥺', '🤩', '😱', '😴', '🥴', '🤧', '🤠'],
-            fruits: ['🍓', '🍉', '🍎', '🍊', '🍇', '🍍', '🥝', '🥭', '🍑', '🍒', '🍌', '🥥', '�', '🍈', '🫐', '🍐', '🍋', '🌶️', '🌽', '🥕'],
+            fruits: ['🍓', '🍉', '🍎', '🍊', '🍇', '🍍', '🥝', '🥭', '🍑', '🍒', '🍌', '🥥', '🥑', '🍈', '🫐', '🍐', '🍋', '🌶️', '🌽', '🥕'],
             animals: ['🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐙', '🐵', '🦄', '🐔', '🐧', '🦉', '🦋', '🐌', '🐞', '🐢', '🐬'],
             objects: ['⚽', '🏀', '🏈', '🎱', '🎁', '🎈', '🎉', '🎄', '💡', '💻', '📱', '⏰', '💎', '🔔', '🔑', '👑', '☂️', '🎨', '📚', '✏️'],
             // MODIFICATION: Replaced '🥮' with '🥨' in sweets for better display consistency
@@ -1085,12 +1085,13 @@
                             if (connectionErrors >= gameParams.maxErrorsAllowed) { handleGameOver("errors"); return; }
                             firstSelectedTile.element.classList.remove('selected');firstSelectedTile=null;
                         }
-                    }else{
+                    }else{ // MODIFICATION: If tiles don't match, deselect both and reset firstSelectedTile
                         showMessage("图案不匹配!","error",1e3);if(audioCanPlay)playSound('error');
                         connectionErrors++; updateErrorsDisplay();
                         if (connectionErrors >= gameParams.maxErrorsAllowed) { handleGameOver("errors"); return; }
                         firstSelectedTile.element.classList.remove('selected');
-                        secondSelectedTile.element.classList.add('selected');firstSelectedTile=secondSelectedTile;
+                        // secondSelectedTile.element.classList.add('selected'); // REMOVED - Do not select the second tile
+                        firstSelectedTile=null; // MODIFIED - Reset selection
                     }
                 }
             }
